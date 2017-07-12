@@ -1,4 +1,4 @@
-<img src="gfx/us_logo.png"><p>
+<img src="gfx/us.png"><p>
 <h2>Ultraschall - Framework 4.0 "Tomorrow Never Knows"</h2>
 beta 1 (10th of July 2017)<br>
 <div style="padding-left:10%; width:85%;">
@@ -121,6 +121,7 @@ The SWS-logo has been taken from the SWS-extension-project, which can be found a
 <td><a href="#RoundNumber">RoundNumber</a></td>
 <td><a href="#IsItemInTrack">IsItemInTrack</a></td></tr>
 <tr><td><a href="#WriteValueToFile">WriteValueToFile</a></td>
+<td><a href="#NumberRangeAsCsvOfNumbers">NumberRangeAsCsvOfNumbers</a></td></tr>
 </tr>
 
 <tr><td><h3> </h3> <br> <br></td><td></td></tr>
@@ -191,6 +192,14 @@ The SWS-logo has been taken from the SWS-extension-project, which can be found a
 <td><a href="#SetTrackMidiInputChanMap">SetTrackMidiInputChanMap</a></td></tr>
 <tr><td><a href="#SetTrackMidiCTL">SetTrackMidiCTL</a></td>
 <td><a href="#"></a></td></tr>
+
+<tr><td><h3> </h3> <br> <br></td><td></td></tr>
+<tr><td><h3>Meta Data Management</h3> </td><td></td></tr>
+<tr><td><strong>ID3-Tags</strong> </td><td></td></tr>
+<tr><td><a href="#SetID3TagsForCurrentProject">SetID3TagsForCurrentProject</a></td>
+<td><a href="#SetID3TagsForCurrentProject_PodcastTags">SetID3TagsForCurrentProject_PodcastTags</a></td>
+<td><a href="#GetID3TagsFromCurrentProject">GetID3TagsFromCurrentProject</a></td>
+<td><a href="#GetID3TagsFromCurrentProject_PodcastTags">GetID3TagsFromCurrentProject_PodcastTags</a></td></tr>
 
 <tr><td><h3> </h3> <br> <br></td><td></td></tr>
 <tr><td><h3>Navigation</h3> </td><td></td></tr>
@@ -416,6 +425,15 @@ parameters:<br>
 <i>filename_with_path</i> - the filename with it's path<br>
 <i>value</i> - the value to export, can be a long string that includes newlines and stuff. nil is not allowed!<p></p>
  
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i>
+<a id="NumberRangeAsCsvOfNumbers"> ultraschall.NumberRangeAsCsvOfNumbers(integer firstnumber, integer lastnumber, integer step)</a></i><p></p>
+returns a string with the all numbers from firstnumber to lastnumber, seperated by a ,
+e.g. firstnumber=4, lastnumber=8 -> 4,5,6,7,8
+<i>firstnumber</i> - the number, with which the string starts<br>
+<i>lastnumber</i> - the number, with which the string ends<br>
+<i>step</i> - how many numbers shall be skipped inbetween. Can lead to a different lastnumber, if not 1 ! nil=1<p></p>
+
+ 
 <hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetUSExternalState">boolean = ultraschall.SetUSExternalState(section, key, value)</a></i><p></p>
 stores values into ultraschall.ini. Returns true if sucessful, false if unsucessful.<p>
 parameters: <br>
@@ -573,7 +591,7 @@ returns Track Rec State.<p></p>
 15 Record Input Force MIDI<br>
 16 MIDI latch replace<br>
 </div><br>
-<i>MonitorWhileRec</i> - Monitor Trackmedie when recording, 0 is off, 1 is on<br> <br>
+<i>MonitorWhileRec</i> - Monitor Trackmedia when recording, 0 is off, 1 is on<br> <br>
 <i>presPDCdelay</i> - preserve PDC delayed monitoring in media items<br> <br>
 <i>RecordingPath</i> - 0 Primary Recording-Path only, 1 Secondary Recording-Path only, 2 Primary Recording Path and Secondary Recording Path(for invisible backup)<br> <br>
 
@@ -970,6 +988,35 @@ parameters:<br>
 <i>tracknumber</i> - number of the track, beginning with 0<br>
 <i>LinkedToMidiChannel</i> - unknown<br>
 <i>unknown</i> - unknown<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetID3TagsForCurrentProject">ultraschall.SetID3TagsForCurrentProject(string title, string artist, string album, string track, string year, string genre, string comment, string date, string involved_people, string language, string coverfilename_and_path, string coverfilename_and_path2, string coverfilename_and_path3)</a></i><p></p>
+sets project-states with the ID3-Tags. Use nil, if you don't want to change an already set ID3-Tag.<br>
+Sets the following tags:<br>
+Title, Artist, Album, Track, Years, Genre, Comment, Date, Involved_People, Language, Coverfilename_And_Path, Cover2filename_And_Path, Cover3filename_And_Path<p>
+
+The "Coverfilename_And_Path"-parameters are meant for the podcast-cover-graphic-files. You can choose up to three in here, stored in Coverfilename_And_Path, Cover2filename_And_Path, Cover3filename_And_Path.<p>
+<strong>Note:</strong> This does not set the ID3-Tags in the MP3-file itself. It only keeps them "in mind of the projectfile"!<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetID3TagsForCurrentProject_PodcastTags">ultraschall.SetID3TagsForCurrentProject_PodcastTags(string podcast, string podcast_category, string podcast_description, string podcast_id, string podcast_keywords, string podcast_url)</a></i><p></p>
+sets project-states with the ID3-Tags specifically for Podcasts. Use nil, if you don't want to change an already set ID3-Tag.<br>
+Sets the following tags:<br>
+Podcasttags for Podcast, Category, Description, ID, Keywords, URL<p>
+<strong>Note:</strong> This does not set the ID3-Tags in the MP3-file itself. It only keeps them "in mind of the projectfile"!<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetID3TagsFromCurrentProject">string title, string artist, string album, string track, string year, string genre, string comment, string date, string involved_people, string language, string coverfilename_and_path, string coverfilename_and_path2, string coverfilename_and_path3 = ultraschall.GetID3TagsFromCurrentProject()</a></i><p></p>
+returns project-states with the ID3-Tags for:<br>
+Title, Artist, Album, Track, Years, Genre, Comment, Date, Involved_People, Language, Coverfilename_And_Path, Cover2filename_And_Path, Cover3filename_And_Path<p>
+
+returns empty string(s) for each ID3-Tag that's unset<p>
+<strong>Note:</strong> This does not get the ID3-Tags from the MP3-file itself. It only gets them from the projectstates within the projectfile!<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetID3TagsFromCurrentProject_PodcastTags">string podcast, string podcast_category, string podcast_description, string podcast_id, string podcast_keywords, string podcast_url = ultraschall.GetID3TagsFromCurrentProject_PodcastTags()</a></i><p></p>
+returns returns project-states with the ID3-tags specifically for podcasts for <br>
+Podcast, Category, Description, ID, Keywords, URL<p>
+
+returns empty string(s) for each ID3-Tag that's unset<p>
+<strong>Note:</strong> This does not get the ID3-Tags from the MP3-file itself. It only gets them from the projectstates within the projectfile!<p></p>
 
 <hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ToggleScrollingDuringPlayback">ultraschall.ToggleScrollingDuringPlayback(scrolling_switch, move_editcursor)</a></i><p></p>
 Toggles scrolling during playback and recording. Let's you choose to put the edit-marker at the playposition, where you toggled scrolling.<br>

@@ -312,6 +312,38 @@ end
 
 --A=ultraschall.WriteValueToFile("c:\\hui.txt","Oh")
 
+ultraschall.WinColorToMacColor=function()
+end
+
+ultraschall.MacColorToWinColor=function()
+end
+
+ultraschall.CreateShownoteArray=function()
+--creates and returns a shownotearray with no entry set
+  return ShownoteArray
+end
+
+ultraschall.NumberRangeAsCsvOfNumbers=function(firstnumber, lastnumber, step)
+-- returns a string with the all numbers from firstnumber to lastnumber, seperated by a ,
+-- e.g. firstnumber=4, lastnumber=8 -> 4,5,6,7,8
+-- firstnumber - the number, with which the string starts
+-- lastnumber - the number, with which the string ends
+-- step - how many numbers shall be skipped inbetween. Can lead to a different lastnumber, if not 1 ! nil=1
+  if tonumber(firstnumber)==nil then return nil end
+  if tonumber(lastnumber)==nil then return nil end
+  if tonumber(step)==nil then step=1 end
+    
+  firstnumber=tonumber(firstnumber)
+  lastnumber=tonumber(lastnumber)
+  step=tonumber(step)
+  
+  local trackstring=""
+  for i=firstnumber, lastnumber, step do
+    trackstring=trackstring..","..tostring(i)
+  end
+  return trackstring:sub(2,-1)
+end
+
 
 
 ------------------------------------
@@ -423,6 +455,58 @@ end
 
 --ALABAMSA=ultraschall.CountUSExternalState_key("tes6to")
 
+
+ultraschall.CountSectionsByPattern=function(pattern)
+--uses "pattern"-string to determine, hof often a section with a certain pattern exists. Good for sections, that have a number in them, like
+--[section1], [section2], [section3]
+--returns the number of sections, that include that pattern
+--refer pattern-matching for lua for more details
+--pattern - the pattern to look for
+end
+
+ultraschall.CountKeysByPattern=function(pattern)
+--uses "pattern"-string to determine, hof often a key with a certain pattern exists. Good for keys, that have a number in them, like
+--key1, key2, key3
+--returns the number of sections, that include that pattern
+--refer pattern-matching for lua for more details
+--pattern - the pattern to look for
+end
+
+ultraschall.CountValuesByPattern=function(pattern)
+--uses "pattern"-string to determine, hof often a value with a certain pattern exists. Good for values, that have a number in them, like
+--value1, value2, value3
+--returns the number of sections, that include that pattern
+--refer pattern-matching for lua for more details
+--pattern - the pattern to look for
+end
+
+
+ultraschall.EnumerateSectionsByPattern=function(pattern,id)
+--uses "pattern"-string to determine, hof often a section with a certain pattern exists. Good for sections, that have a number in them, like
+--[section1], [section2], [section3]
+--returns the full section-name of the "id"-th section, that fits the pattern description
+--refer pattern-matching for lua for more details
+--pattern - the pattern to look for
+--id - the number of the section, that fits that pattern scheme
+end
+
+ultraschall.EnumerateKeysByPattern=function(pattern,id)
+--uses "pattern"-string to determine, hof often a key with a certain pattern exists. Good for keys, that have a number in them, like
+--key1, key2, key3
+--returns the full key-name of the "id"-th key, that fits the pattern description
+--refer pattern-matching for lua for more details
+--pattern - the pattern to look for
+--id - the number of the key, that fits that pattern scheme
+end
+
+ultraschall.EnumerateValuesByPattern=function(pattern,id)
+--uses "pattern"-string to determine, hof often a value with a certain pattern exists. Good for values, that have a number in them, like
+--values1, value2, value3
+--returns the full value of the "id"-th value, that fits the pattern description
+--refer pattern-matching for lua for more details
+--pattern - the pattern to look for
+--id - the number of the value, that fits that pattern scheme
+end
 
 
 --------------------------
@@ -1069,6 +1153,25 @@ end
 
 --A,A2=ultraschall.GetTrackIcon_Filename(0)
 
+ultraschall.GetTrackRecCFG=function(tracknumber,cfg_nr)
+  --returns the Rec-configuration-string, with which recordings are made
+  --
+  --tracknumber - the number of the track
+  --cfg_nr - the number of the reccfg, beginning with 0(there can be more than one)
+  if tonumber(tracknumber)==nil then return nil end
+  local tracknumber=tonumber(tracknumber)
+  if tracknumber<0 then return nil end
+  if tracknumber>reaper.CountTracks()-1 then return nil end
+  local MediaTrack=reaper.GetTrack(0, tracknumber)
+  local retval, str = reaper.GetTrackStateChunk(MediaTrack, "test", false)
+  local RECCFGNR=str:match("<RECCFG ("..cfg_nr..")%c")
+  if RECCFGNR==nil then return -1 end
+  local RECCFG=str:match("<RECCFG.-%c(.-)%c")
+  
+  return RECCFG
+end
+
+--A=ultraschall.GetTrackRecCFG(0,0)
 
 ultraschall.GetTrackMidiInputChanMap=function(tracknumber)
 --returns the Midi Input Channel Map-state or nil, if not existing
@@ -1823,6 +1926,33 @@ end
 --A=ultraschall.SetTrackMidiCTL(0, -1, -1)
 
 
+ultraschall.SetTrackMIDIColorMapFn=function(tracknumber, Colormapfilename_with_path)
+--TODO - GetTrackMIDICOlorMapFn() and ... what the heck does this function?
+--Sets MIDICOLORMAPFN
+-- tracknumber - counted from 0
+-- Colormapfilename_with_path - filename with path
+
+  if tonumber(tracknumber)==nil then return false end
+  if tonumber(tracknumber)<0 then return false end
+  tracknumber=tonumber(tracknumber)
+  if Colormapfilename_with_path==nil then Colormapfilename_with_path="" end
+  local str="MIDICOLORMAPFN \""..Colormapfilename_with_path.."\""
+  local Mediatrack=reaper.GetTrack(0,tracknumber)
+  local A,AA=reaper.GetTrackStateChunk(Mediatrack,str,false)
+
+  local B1=AA:match("(.-)MIDICOLORMAPFN")
+  local B3=AA:match("MIDICOLORMAPFN.-%c(.*)")
+  if B1==nil then B1=AA:match("(.-TRACK)") B3=AA:match(".-TRACK(.*)") end
+
+  local B=reaper.SetTrackStateChunk(Mediatrack,B1.."\n"..str.."\n"..B3,false)
+--  reaper.ClearConsole()
+  --reaper.ShowConsoleMsg(AA)
+  return B
+end
+
+--A=ultraschall.SetTrackMIDIColorMapFn(0, "us.png")
+
+
 ------------------------------
 ---- Meta Data Management ----
 ------------------------------
@@ -1908,6 +2038,38 @@ end
 --reaper.ShowConsoleMsg(a.."."..b.."."..c.."."..d.."."..e.."."..f.." end\n")
 --if a=="" then reaper.MB("nilalarm","",0) end
 
+----------------------
+---- Color Picker ----
+----------------------
+
+ultraschall.TracksToGentleSonicRainboom=function(startingcolor, direction)
+end
+
+ultraschall.TracksToAdjustedSonicRainboom=function(startingcolor, direction)
+end
+
+ultraschall.TracksToGentleGrayScale=function(startingshade, direction)
+end
+
+ultraschall.TracksToAdjustedGrayScale=function(startingshade, direction)
+end
+
+ultraschall.TracksToColorPattern=function(colorpattern, startingcolor, direction)
+end
+
+---------------------------
+---- Routing Snapshots ----
+---------------------------
+
+ultraschall.SetRoutingSnapshot=function(snapshot_nr)
+end
+
+ultraschall.RecallRoutingSnapshot=function(snapshot_nr)
+end
+
+ultraschall.ClearRoutingSnapshot=function(snapshot_nr)
+end
+
 
 --------------------
 ---- Navigation ----
@@ -1917,9 +2079,9 @@ ultraschall.ToggleScrollingDuringPlayback=function(scrolling_switch, move_editcu
 -- integer scrolling_switch - 1-on, 0-off
 -- integer move_editcursor - when scrolling stops, shall the editcursor be moved to current position of the playcursor(1) or not(0)
 -- changes, if necessary, the state of the actions 41817 and 40036
-  Aretval=reaper.GetToggleCommandState(41817)
-  editcursor=reaper.GetCursorPosition()
-  playcursor=reaper.GetPlayPosition()
+  local Aretval=reaper.GetToggleCommandState(41817)
+  local editcursor=reaper.GetCursorPosition()
+  local playcursor=reaper.GetPlayPosition()
 
   if reaper.GetToggleCommandState(40036)~=scrolling_switch then
     reaper.Main_OnCommand(40036,0)
@@ -2667,6 +2829,14 @@ end
 
 --ultraschall.ToggleStateButton(0,"_Ultraschall_OnAir" ,0)
 
+---------------------
+---- Ripple Edit ----
+---------------------
+
+ultraschall.RippleEdit=function(Tracks, Startposition, Endposition)
+-- Tracks is a string of tracks(seperated by a ,), where the Ripple shall be applied to.
+
+end
 
 ---------------------
 ---- Add Markers ----
@@ -2768,6 +2938,55 @@ end
 
 --ultraschall.AddChapterMarker(1,20,"hui")
 
+ultraschall.AddShownoteMarker=function(position, shownotetitle, URL)
+--!! TODO - local machen der Variablen!!
+
+-- Adds a Shownotemarker. 
+-- position - is time in seconds, 
+-- shown_number - the number shown with the marker in Reaper, 
+-- shownotetitle - a string for the title of the shownote, 
+-- URL - a string for the URL.
+--
+-- If no shownotetitle is given, it will write "_Shownote:" only, if no URL is given, it will add --<>--
+-- returns -1 if position isn't a valid value
+  numShownotes=ultraschall.CountShownoteMarkers()
+  shown_number=0
+  for i=1,numShownotes+1 do
+    A,shown_numbertemp=ultraschall.EnumerateShownoteMarkers(i)
+--    reaper.MB(shown_number,shown_numbertemp,0)
+    if tonumber(shown_numbertemp)~=nil then
+      if shown_number<tonumber(shown_numbertemp) then shown_number=tonumber(shown_numbertemp) end
+    end
+  end
+
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0x00AA00|0x1000000
+    else
+      color = 0x00AA00|0x1000000
+    end
+
+  if position==nil then position=-1 end
+  if URL==nil then URL="" end
+  if shownotetitle==nil then shownotetitle="" end
+
+  if position>=0 then noteID=reaper.AddProjectMarker2(0, false, position, 0, "_Shownote: "..shownotetitle.." URL:"..URL, shown_number+1, color) -- set green shownote-marker
+                      reaper.SetProjExtState(0, "Ultraschall_Shownotes", "TITLE"..shown_number+1, shownotetitle)
+                      reaper.SetProjExtState(0, "Ultraschall_Shownotes", "URL"..shown_number+1, URL)
+  else noteID=-1
+  end
+
+  return noteID
+end
+
+
+
+ultraschall.test=function()
+--C,CC,CCC,CCCC= ultraschall.AddShownoteMarker(19,"Testomat3000","achherrje.de")
+--A,AA=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "TITLE".."29")
+--B,BB=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "URL".."29")
+end
+
 
 ultraschall.AddEditMarker=function(position, shown_number, edittitle)
 -- Adds an Editmarker. 
@@ -2857,6 +3076,21 @@ ultraschall.CountNormalMarkers=function()
   return count
 end
 
+
+ultraschall.CountShownoteMarkers=function()
+-- returns number of _Shownote: markers in the project
+
+  local a,nummarkers,b=reaper.CountProjectMarkers(0)
+  local count=0
+  for i=0, nummarkers-1 do
+    local retval, isrgn, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers(i)
+    if name:sub(1,10)=="_Shownote:" then count=count+1 end
+  end
+
+  return count
+end
+
+--A=ultraschall.CountShownoteMarkers()
 
 ultraschall.CountChapterMarkers=function()
 -- returns number of _Chapter: markers in the project
@@ -3043,6 +3277,89 @@ end
 --A=ultraschall.AddDummyMarker(4,4,"D")
 --A,AA,AAA,AAAA=ultraschall.EnumerateDummyMarkers(1)
 
+ultraschall.EnumerateShownoteMarkers=function(number)
+-- !TODO : local machen von variablen
+
+-- Get the data of a _Shownote marker
+-- returns number, ID, position(in seconds), shownotename and the URL
+
+  if number==nil then return -1 end
+  c,nummarkers,b=reaper.CountProjectMarkers(0)
+  number=number-1
+  wentfine=0
+  count=-1
+  retnumber=0
+  tempo=-4
+  retidxnum=""
+  shownotename=""
+  for i=0, nummarkers-1 do
+    retval, isrgn, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers(i)
+    if name:sub(1,10)=="_Shownote:" then count=count+1 end 
+    if number>=0 and wentfine==0 and count==number then 
+        retnumber=retval
+        shownotename=name--:match("(_Shownote:.*--<)")
+        if shownotename==nil then shownotename="_Shownote:" tempo=-1 end--shownotename=name:match("(_Shownote:.*)") tempo=-1 end
+        shown_number_temp=markrgnindexnumber
+        retidxnum=markrgnindexnumber
+        position=pos
+        URL=name:match("(--<.*>--)")
+        if URL==nil then URL="" end
+        wentfine=1
+    end
+  end
+
+  
+  if wentfine==1 then 
+    A,TITLE_State=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "TITLE"..tostring(shown_number_temp))
+    B,URL_State=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "URL"..tostring(shown_number_temp))
+    return retnumber, retidxnum, position, shownotename:sub(11,-1), TITLE_State, URL_State
+  else return -1, ""
+  end
+end
+
+--A=ultraschall.AddShownoteMarker(301,"vier","vier.de")
+--ret,retid,pos,name,tit,urlst=ultraschall.EnumerateShownoteMarkers(2)
+
+ultraschall.EnumerateShownoteMarkers_ByShownNumber=function(shown_number)
+-- !TODO : local machen von variablen
+
+-- Get the data of a _Shownote marker
+-- returns number, ID, position(in seconds), shownotename and the URL
+
+  number=tonumber(number)
+  if number==nil then return -1 end
+  c,nummarkers,b=reaper.CountProjectMarkers(0)
+  number=number-1
+  wentfine=0
+  count=-1
+  retnumber=0
+  tempo=-4
+  retidxnum=""
+  shownotename=""
+  for i=0, nummarkers-1 do
+    retval, isrgn, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers(i)
+    if name:sub(1,10)=="_Shownote:" then count=count+1 end 
+    if number>=0 and wentfine==0 and count==number then 
+        retnumber=retval
+        shownotename=name--:match("(_Shownote:.*--<)")
+        if shownotename==nil then shownotename="_Shownote:" tempo=-1 end--shownotename=name:match("(_Shownote:.*)") tempo=-1 end
+        shown_number_temp=markrgnindexnumber
+        retidxnum=markrgnindexnumber
+        position=pos
+        URL=name:match("(--<.*>--)")
+        if URL==nil then URL="" end
+        wentfine=1
+    end
+  end
+
+  
+  if wentfine==1 then 
+    A,TITLE_State=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "TITLE"..tostring(shown_number_temp))
+    B,URL_State=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "URL"..tostring(shown_number_temp))
+    return retnumber, retidxnum, position, shownotename:sub(11,-1), TITLE_State, URL_State
+  else return -1, ""
+  end
+end
 
 
 ultraschall.EnumerateEditMarkers=function(number)
@@ -3099,6 +3416,27 @@ return numnums, chaptermarkersarray
 end
 
 --A,AA=ultraschall.GetAllChapterMarkers()
+
+ultraschall.GetAllShownoteMarkers=function()
+--TODO: local machen von variablen
+
+--returns the number of shownotes and an array of each shownote in the format:
+-- shownotemarkersarray[index] [0-position;1-shownotename]
+  local count=ultraschall.CountShownoteMarkers()
+  local numnums=count
+
+  local shownotemarkersarray = {}
+  for i=1, count do
+    shownotemarkersarray[i]={}
+    local a,b,position,name=ultraschall.EnumerateShownoteMarkers(i)
+    shownotemarkersarray[i][0]=position
+    shownotemarkersarray[i][1]=name
+  end
+
+return numnums, shownotemarkersarray
+end
+
+--A,AA=ultraschall.GetAllShownoteMarkers()
 
 
 ultraschall.GetAllEditMarkers=function()
@@ -3312,6 +3650,68 @@ end
 --A=ultraschall.SetChapterMarker(1,2,11,"Kapitel6")
 
 
+ultraschall.SetShownoteMarker=function(number, position, shownotetitle, URL)
+-- TODO: local machen von variablen
+
+-- Sets values of a Shownote-Marker
+-- number - number of the _Shownote-marker, 1 to current number of _Shownote-markers
+-- position - position in seconds; -1 - keep the old value
+-- shown_number - the number shown with the marker in Reaper; -1 - keep the old value
+-- shownotetitle - title of the shownote; nil - keep the old value
+-- URL - URL for the title; nil - keep the old value
+--
+-- returns true if successful and false if not(i.e. marker doesn't exist)
+
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0x00AA00|0x1000000
+    else
+      color = 0x00AA00|0x1000000
+    end
+
+  if tonumber(position)==nil then position=-1 end
+  if tonumber(position)<0 then position=-1 end
+  if tonumber(shown_number)==nil then shown_number=-1 end
+  if tonumber(number)==nil then return false end
+  
+  c,nummarkers,b=reaper.CountProjectMarkers(0)
+  number=tonumber(number)-1
+  wentfine=0
+  count=-1
+  retnumber=0
+  for i=0, nummarkers-1 do
+    retval, isrgn, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers(i)
+    if name:sub(1,10)=="_Shownote:" then count=count+1 end 
+    if number>=0 and wentfine==0 and count==number then 
+    shown_number_temp=markrgnindexnumber
+        if tonumber(position)==-1 or position==nil then position=pos end
+        if tonumber(shown_number)<=-1 or shown_number==nil then shown_number=markrgnindexnumber end
+        if shownotetitle==nil then shownotetitle=name:match("(_Shownote:.*)") shownotetitle=shownotetitle:sub(11,-1) end
+        if URL==nil then 
+--        A,TITLE_State=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "TITLE"..tostring(shown_number_temp))
+        B,URL=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "URL"..tostring(shown_number_temp))
+        end
+        retnumber=i
+        wentfine=1
+    end
+  end
+  
+  if URL==nil then 
+  B,URL=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "URL"..tostring(shown_number_temp))
+  end
+  if shownotetitle==nil then shownotetitle="" end
+  
+  if wentfine==1 then reaper.SetProjExtState(0, "Ultraschall_Shownotes", "TITLE"..tostring(shown_number_temp), shownotetitle)
+                      reaper.SetProjExtState(0, "Ultraschall_Shownotes", "URL"..tostring(shown_number_temp), URL)
+                      return reaper.SetProjectMarkerByIndex(0, retnumber, 0, position, 0, shown_number, "_Shownote:" .. shownotetitle, color)
+  else return false
+  end
+end
+
+--ultraschall.AddShownoteMarker(10,"Truddle","fuddle.de")
+--ultraschall.SetShownoteMarker(2,nil,nil,nil)
+--A,AA,AAA,AAAA,AAAAA,AAAAAA=ultraschall.EnumerateShownoteMarkers(3)
+
 ultraschall.SetPodRangeRegion=function(startposition, endposition)
 -- Sets _PodRange:-Marker
 -- startposition - startposition in seconds, must be positive value
@@ -3376,6 +3776,42 @@ end
 --A=ultraschall.AddNormalMarker(3,10,"marke")
 --A2=ultraschall.DeleteNormalMarker("1")
 
+ultraschall.DeleteShownoteMarker=function(number)
+--TODO local machen von Variablen
+
+-- Deletes a Shownote-Marker
+-- number - number of the _Shownote-marker, 1 to current number of _Shownote-markers
+-- returns true if successful and false if not(i.e. marker doesn't exist)
+
+  c,nummarkers,b=reaper.CountProjectMarkers(0)
+  number=tonumber(number)
+  if number==nil then return -1 end
+  number=number-1
+  wentfine=0
+  count=-1
+  retnumber=0
+  for i=0, nummarkers-1 do
+    retval, isrgn, pos, rgnend, name, markrgnindexnumber = reaper.EnumProjectMarkers(i)
+    if name:sub(1,10)=="_Shownote:" then count=count+1 end 
+    if number>=0 and wentfine==0 and count==number then 
+        shown_number_temp=markrgnindexnumber
+        retnumber=i
+        wentfine=1
+    end
+  end
+  
+  if wentfine==1 then 
+    reaper.SetProjExtState(0, "Ultraschall_Shownotes", "TITLE"..tostring(shown_number_temp), "")
+    reaper.SetProjExtState(0, "Ultraschall_Shownotes", "URL"..tostring(shown_number_temp), "")
+    return reaper.DeleteProjectMarkerByIndex(0, retnumber)
+  else return false
+  end
+end
+
+--A,AA,AAA=ultraschall.AddShownoteMarker(10,"ofseroad2","middle2")
+--A,AA=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "TITLE1")
+--B,BB=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "URL1")
+--ultraschall.DeleteShownoteMarker(1)
 
 ultraschall.DeleteChapterMarker=function(number)
 -- Deletes a Chapter-Marker
@@ -3468,6 +3904,89 @@ end
 ---- Export Markers -----
 -------------------------
 
+ultraschall.ExportShownotesToFile=function(filename_with_path, PodRangeStart,PodRangeEnd)
+--ToDo local machen der variables
+
+--Export Shownote-Markers to File
+--filename_with_path - filename of the file where the markers shall be exported to
+--PodRangeStart - start of the Podcast;markers earlier of that will not be exported;markers exported will be markerposition minus PodRangeStart
+--                must be a positive value; nil=0
+--PodRangeEnd - end of the Podcast; markers later of that will not be exported; 
+--              must be a positive value; nil=end of project  
+-- return -1 in case of error
+
+if filename_with_path == nil then return -1 end
+PodRangeStart=tonumber(PodRangeStart)
+PodRangeEnd=tonumber(PodRangeEnd)
+if PodRangeStart==nil then PodRangeStart=0 end
+if PodRangeStart<0 then return -1 end
+if PodRangeEnd==nil then PodRangeEnd=reaper.GetProjectLength(0) end
+if PodRangeEnd<PodRangeStart then return -1 end
+  number=ultraschall.CountShownoteMarkers()
+  timestring="00:00:00.000"
+  
+  file=io.open(filename_with_path,"w")
+  
+  if file==nil then return -1 end
+    for i=1,number do
+      idx,shown_number,pos,name,URL = ultraschall.EnumerateShownoteMarkers(i)
+      if pos>=PodRangeStart and pos<=PodRangeEnd then
+        pos=pos-PodRangeStart
+        timestring=ultraschall.SecondsToTime(pos)
+        tempomat, TITLE=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "TITLE"..shown_number)
+        tempomat, URL=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "URL"..shown_number)
+        file:write(timestring.." \""..name.."\"-->Title:\""..TITLE.."\"-->URL:\""..URL.."\"-->END\n")
+      end
+    end
+  fileclose=io.close(file)
+  return 1
+end
+
+
+--A,AA,AAA=ultraschall.AddShownoteMarker(10,"test1","URL3000.com")
+--A,AA,AAA=ultraschall.AddShownoteMarker(20,"test2","URL4000.com")
+--A,AA,AAA=ultraschall.AddShownoteMarker(30,"test3","URL5000.com")
+--APACHEN=ultraschall.ExportShownotesToFile("c:\\test.txt")
+
+ultraschall.ExportShownotesToFile_Filerequester=function(PodRangeStart,PodRangeEnd)
+--ToDo local machen der variables
+
+--Export Shownote-Markers to File(must be an existing file or the requester runs into troubles!)
+--PodRangeStart - start of the Podcast;markers earlier of that will not be exported;markers exported will be markerposition minus PodRangeStart
+--                must be a positive value; nil=0
+--PodRangeEnd - end of the Podcast; markers later of that will not be exported; 
+--              must be a positive value; nil=end of project  
+-- return -1 in case of error
+
+if PodRangeStart==nil then PodRangeStart=0 end
+if PodRangeStart<0 then return -1 end
+if PodRangeEnd==nil then PodRangeEnd=reaper.GetProjectLength(0) end
+if PodRangeEnd<PodRangeStart then return -1 end
+  number=ultraschall.CountShownoteMarkers()
+  
+  retval, filename_with_path = reaper.GetUserFileNameForRead("ShownoteMarkers.shownotes.txt", "Export Shownote-Markers", "*.shownotes.txt")
+  if retval==false then return -1 end
+
+  timestring="00:00:00.000"
+  
+  file=io.open(filename_with_path,"w")
+  
+  if file==nil then return -1 end
+    for i=1,number do
+      idx,shown_number,pos,name,URL = ultraschall.EnumerateShownoteMarkers(i)
+      if pos>=PodRangeStart and pos<=PodRangeEnd then
+        pos=pos-PodRangeStart
+        timestring=ultraschall.SecondsToTime(pos)
+        tempomat, TITLE=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "TITLE"..shown_number)
+        tempomat, URL=reaper.GetProjExtState(0, "Ultraschall_Shownotes", "URL"..shown_number)
+        file:write(timestring.." \""..name.."\"-->Title:\""..TITLE.."\"-->URL:\""..URL.."\"-->END\n")
+      end
+    end
+  fileclose=io.close(file)
+  return 1
+end
+
+--APACHEN=ultraschall.ExportShownotesToFile_Filerequester()
 
 ultraschall.ExportChapterMarkersToFile=function(filename_with_path,PodRangeStart,PodRangeEnd)
 --Export Chapter-Markers to filename_with_path
@@ -3707,6 +4226,90 @@ end
 ---- Import Markers -----
 -------------------------
 
+ultraschall.ImportShownotesFromFile=function(filename_with_path)
+--!!NEW FORMAT! NEEDS TO BE IMPLEMENTED FIRST!!!
+
+-- returns an array fo the imported values
+-- first entry, time1 in seconds, second entry markername1, third entry time2 in seconds, fourth entry markername2, etc
+--
+-- filename_with_path - filename with path of the file to import
+--[[
+  if filename_with_path == nil then return -1 end
+  if PodRangeStart==nil then PodRangeStart=0 end
+  if PodRangeStart<0 then return -1 end
+  if PodRangeEnd==nil then PodRangeEnd=reaper.GetProjectLength(0) end
+  if PodRangeEnd<PodRangeStart then return -1 end  number=ultraschall.CountNormalMarkers()
+  
+  file=io.open(filename_with_path,"r")
+  if file==nil then return -1 end
+  fileclose=io.close(file) 
+    
+  markername=""
+  entry=0
+
+table = {}
+    
+  for line in io.lines(filename_with_path) do
+    entry=entry+1
+    table[entry]={}
+    time=ultraschall.TimeToSeconds(line:match("%d*:%d*:%d*.%d*"))
+    markername=line:match("%s.*")
+
+    if markername==nil then markername="" end
+    if time<0 then return -1 end
+
+    table[entry][0]=time
+    table[entry][1]=markername
+  end
+
+  return table]]
+end
+
+--A=ultraschall.ImportShownotesFromFile("c:\\test.txt")
+
+ultraschall.ImportShownotesFromFile_Filerequester=function()
+--!!NEW FORMAT! NEEDS TO BE IMPLEMENTED FIRST!!!
+
+-- returns an array fo the imported values
+-- first entry, time1 in seconds, second entry markername1, third entry time2 in seconds, fourth entry markername2, etc
+--
+-- filename_with_path - filename with path of the file to import
+--[[
+  if PodRangeStart==nil then PodRangeStart=0 end
+  if PodRangeStart<0 then return -1 end
+  if PodRangeEnd==nil then PodRangeEnd=reaper.GetProjectLength(0) end
+  if PodRangeEnd<PodRangeStart then return -1 end  number=ultraschall.CountNormalMarkers()
+  
+  retval, filename_with_path = reaper.GetUserFileNameForRead("Shownotemarkers.shownotess.txt", "Import Shownote-Markers", "*.shownotes.txt")
+  if retval==false then return -1 end 
+  
+    file=io.open(filename_with_path,"r")
+    if file==nil then return -1 end
+    fileclose=io.close(file) 
+      
+    markername=""
+    entry=0
+  
+  table = {}
+      
+    for line in io.lines(filename_with_path) do
+      entry=entry+1
+      table[entry]={}
+      time=ultraschall.TimeToSeconds(line:match("%d*:%d*:%d*.%d*"))
+      markername=line:match("%s.*")
+  
+      if markername==nil then markername="" end
+      if time<0 then return -1 end
+  
+      table[entry][0]=time
+      table[entry][1]=markername
+    end
+  
+    return table]]
+  end
+  
+
+--APPACHEN=ultraschall.ImportShownotesFromFile_Filerequester()
 
 ultraschall.ImportChaptersFromFile=function(filename_with_path,PodRangeStart)
 -- Imports chapterentries from a file and returns an array of the imported values.
@@ -4074,6 +4677,124 @@ end
 
 --A,AA,AAA,AAAA=ultraschall.MarkerToDummyMarker("1")
 
+ultraschall.MarkerToShownoteMarker=function(number)
+--TODO: New implementation and localize variables
+--reaper.MB("test","test",0)
+-- test --<URL>--
+if number==nil then return -1 end
+if number<1 then return -1 end
+--  retval, num_markers, num_regions = reaper.CountProjectMarkers(0)
+--  for i=retval,0,-1 do
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0x00AA00|0x1000000
+    else
+      color = 0x00AA00|0x1000000
+    end
+        
+    idx, shownmarker, position, markername = ultraschall.EnumerateNormalMarkers(number)
+--    reaper.MB(tostring(idx),markername,0)
+    if idx==-1 then return -1 end
+    URL=markername:match("(--<.*>--)")
+    if URL==nil then URL="--<>--" end
+    Atempname=markername:sub(1,-(URL:len()+1))
+    itworks=reaper.SetProjectMarkerByIndex(0, idx-1, false, position, 0, shownmarker, "_Shownote:"..Atempname..URL, color)
+--  end
+return idx, shownmarker, position, markername
+end
+
+--A, AA, AAA, AAAA=ultraschall.EnumerateNormalMarkers(1)
+--A,AA,AAA,AAAA=ultraschall.MarkerToShownoteMarker(1)
+
+
+ultraschall.ShownoteToEditMarker=function(number)
+--TODO: New implementation and localize variables
+if number==nil then return -1 end
+if number<1 then return -1 end
+--  retval, num_markers, num_regions = reaper.CountProjectMarkers(0)
+--  for i=retval,0,-1 do
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0xFF0000|0x1000000
+    else
+      color = 0x0000FF|0x1000000
+    end 
+            
+    idx, shownmarker, position, markername,URL = ultraschall.EnumerateShownoteMarkers(number)
+    if idx==-1 then return -1 end
+    itworks=reaper.SetProjectMarkerByIndex(0, idx-1, false, position, 0, shownmarker, "_Edit:"..markername.."--<"..URL..">--", color)
+--  end
+return idx, shownmarker, position, markername
+end
+
+
+ultraschall.ShownoteToChapterMarker=function(number)
+--TODO: New implementation and localize variables
+if number==nil then return -1 end
+if number<1 then return -1 end
+--  retval, num_markers, num_regions = reaper.CountProjectMarkers(0)
+--  for i=retval,0,-1 do
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0x0000FF|0x1000000
+    else
+      color = 0xFF0000|0x1000000
+    end 
+                
+    idx, shownmarker, position, markername,URL = ultraschall.EnumerateShownoteMarkers(number)
+    if idx==-1 then return -1 end
+    itworks=reaper.SetProjectMarkerByIndex(0, idx-1, false, position, 0, shownmarker, "_Chapter:"..markername.."--<"..URL..">--", color)
+--  end
+return idx, shownmarker, position, markername
+end
+
+
+ultraschall.ShownoteToDummyMarker=function(number)
+--TODO: New implementation and localize variables
+if number==nil then return -1 end
+if number<1 then return -1 end
+--  retval, num_markers, num_regions = reaper.CountProjectMarkers(0)
+--  for i=retval,0,-1 do
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0x999999|0x1000000
+    else
+      color = 0x999999|0x1000000
+    end 
+                
+    idx, shownmarker, position, markername,URL = ultraschall.EnumerateShownoteMarkers(number)
+    if idx==-1 then return -1 end
+    itworks=reaper.SetProjectMarkerByIndex(0, idx-1, false, position, 0, shownmarker, "_Dummy:"..markername.."--<"..URL..">--", color)
+--  end
+return idx, shownmarker, position, markername
+end
+
+
+ultraschall.ShownoteToMarker=function(number)
+--TODO: New implementation and localize variables
+if number==nil then return -1 end
+if number<1 then return -1 end
+--  retval, num_markers, num_regions = reaper.CountProjectMarkers(0)
+--  for i=retval,0,-1 do
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0x888888|0x0000000
+    else
+      color = 0x888888|0x0000000
+    end 
+                
+    idx, shownmarker, position, markername,URL = ultraschall.EnumerateShownoteMarkers(number)
+    if idx==-1 then return -1 end
+--    itworks=ultraschall.DeleteShownoteMarker(number)
+--    itworks2=ultraschall.AddNormalMarker(position, shownmarker, markername.."--<"..URL..">--")
+    itworks=reaper.SetProjectMarkerByIndex(0, idx-1, false, position, 0, shownmarker, markername.."--<"..URL..">--", color)
+--  end
+return idx, shownmarker, position, markername
+end
+
+--ultraschall.AddShownoteMarker(10,10,"test","URL.com")
+--AA,AAA,AAA,AAAA = ultraschall.ShownoteToMarker(1)
+--ultraschall.MarkerToShownoteMarker(1)
 
 ultraschall.ChapterToEditMarker=function(number)
 number=tonumber(number)
@@ -4098,6 +4819,35 @@ end
 
 --A,AA,AAA,AAAA=ultraschall.ChapterToEditMarker(1)
 --A,AA,AAA,AAAA=ultraschall.EditToChapterMarker(1)
+
+ultraschall.ChapterToShownoteMarker=function(number)
+--Needs reimplementation and localizing variables
+number=tonumber(number)
+local color=0
+if number==nil then return -1 end
+if number<1 then return -1 end
+--  retval, num_markers, num_regions = reaper.CountProjectMarkers(0)
+--  for i=retval,0,-1 do
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0x00AA00|0x1000000
+    else
+      color = 0x00AA00|0x1000000
+    end
+        
+    idx, shownmarker, position, markername = ultraschall.EnumerateChapterMarkers(number)
+--    reaper.MB(tostring(idx),markername,0)
+    if idx==-1 then return -1 end
+    URL=markername:match("(--<.*>--)")
+    if URL==nil then URL="--<>--" end
+    Atempname=markername:sub(1,-(URL:len()+1))
+    itworks=reaper.SetProjectMarkerByIndex(0, idx-1, false, position, 0, shownmarker, "_Shownote:"..Atempname..URL, color)
+--  end
+return idx, shownmarker, position, markername
+end
+
+--A,AA,AAA,AAAA=ultraschall.ChapterToShownoteMarker(1)
+--A,AA,AAA,AAAA=ultraschall.ShownoteToChapterMarker(1)
 
 ultraschall.ChapterToDummyMarker=function(number)
 number=tonumber(number)
@@ -4174,6 +4924,31 @@ end
 --A,AA,AAA,AAAA=ultraschall.EditToChapterMarker("1")
 --A,AA,AAA,AAAA=ultraschall.ChapterToEditMarker(1)
 
+ultraschall.EditToShownoteMarker=function(number)
+if number==nil then return -1 end
+if number<1 then return -1 end
+--  retval, num_markers, num_regions = reaper.CountProjectMarkers(0)
+--  for i=retval,0,-1 do
+  os = reaper.GetOS()
+    if string.match(os, "OSX") then 
+      color = 0x00AA00|0x1000000
+    else
+      color = 0x00AA00|0x1000000
+    end
+        
+    idx, shownmarker, position, markername = ultraschall.EnumerateEditMarkers(number)
+--    reaper.MB(tostring(idx),markername,0)
+    if idx==-1 then return -1 end
+    URL=markername:match("(--<.*>--)")
+    if URL==nil then URL="--<>--" end
+    Atempname=markername:sub(1,-(URL:len()+1))
+    itworks=reaper.SetProjectMarkerByIndex(0, idx-1, false, position, 0, shownmarker, "_Shownote:"..Atempname..URL, color)
+--  end
+return idx, shownmarker, position, markername
+end
+
+--A,AA,AAA,AAAA=ultraschall.EditToShownoteMarker(1)
+--A,AA,AAA,AAAA=ultraschall.ShownoteToEditMarker(1)
 
 ultraschall.EditToDummyMarker=function(number)
 number=tonumber(number)
@@ -4250,6 +5025,12 @@ end
 --A,AA,AAA,AAAA=ultraschall.ChapterToDummyMarker(1)
 
 
+ultraschall.DummyToShownoteMarker=function(number)
+return idx, shownmarker, position, markername
+end
+
+--A,AA,AAA,AAAA=ultraschall.DummyToShownoteMarker(1)
+--A,AA,AAA,AAAA=ultraschall.ShownoteToDummyMarker(1)
 
 ultraschall.DummyToEditMarker=function(number)
 number=tonumber(number)
@@ -4301,3 +5082,67 @@ end
 --A,AA,AAA,AAAA=ultraschall.DummyToMarker(1)
 --A,AA,AAA,AAAA=ultraschall.MarkerToDummyMarker(1)
 
+-----------------------
+---- Render Export ----
+-----------------------
+
+ultraschall.SetGeneralRenderSettings=function()
+end
+
+ultraschall.RenderToMP3_CBR=function()
+end
+
+ultraschall.RenderToMP3_VBR=function()
+end
+
+ultraschall.RenderToMP3_MaxQuality=function()
+end
+
+ultraschall.RenderToMP3_ABR=function()
+end
+
+ultraschall.RenderToFlac=function()
+end
+
+ultraschall.RenderToOpus=function()
+end
+
+ultraschall.RenderToMP4Video=function()
+end
+
+ultraschall.RenderToWebMVideo=function()
+end
+
+ultraschall.RenderToAviVideo=function()
+end
+
+ultraschall.RenderToMKVVideo=function()
+end
+
+ultraschall.RenderToAIFF=function()
+end
+
+ultraschall.RenderSettings=function()
+-- set general render settings
+return settingsarray
+end
+
+
+------------------------------------
+---- Import Reaper Config-Files ----
+------------------------------------
+
+ultraschall.ImportIni=function(from_export_filepath, to_export_filepath)
+return successful, backup_filepath
+end
+
+ultraschall.ImportIniNb=function(from_export_filepath, to_export_filepath)
+return successful, backup_filepath
+end
+
+ultraschall.ImportIniKb=function(from_export_filepath, to_export_filepath)
+return successful, backup_filepath
+end
+
+
+--ultraschall.test=function()

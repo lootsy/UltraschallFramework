@@ -1,0 +1,1552 @@
+<img src="gfx/us_logo.png"><p>
+<h2>Ultraschall - Framework 4.0 "Tomorrow Never Knows"</h2>
+beta 1 (10th of July 2017)<br>
+<div style="padding-left:10%; width:85%;">
+<h3>Lua-functions for Reaper</h3>
+
+<h4>Introduction</h4>
+The Ultraschall-Extension is intended to be an extension for the DAW Reaper, that enhance it with podcast functionalities. Most DAWs are intended to be used by musicians, for music, but podcasters have their own needs to be fulfilled. In fact, in some places their needs differ from the needs of a musician heavily.<p>
+The Ultraschall-Framework itself is intended to include a set of functions, that help creating such functionalities. By giving programmers helper functions for cough-buttons, chapter-marker management, giving additional ways to navigate through a project and to get access to each and every corner of Reaper. That way, extending Ultraschall is more comfortable to do.<p>
+<h4>Setup</h4>
+From Ultraschall 4.0 on, the framework will be delivered together with the installation-package of Ultraschall. Up until then, you can <a href="http://www.mespotine.de/Ultraschall/US_Framework.html#Setup">download the latest versions</a> as a zip-archive. <p><p>
+Requirements: Reaper 5.40 and SWS extension 2.8.8<p>
+Step 1: When you've downloaded the archive, open it. You'll find in it a directory called "Scripts", a license-file, this documentation and the file "reaper-kb.txt".<br>
+Step 2: Copy the files, that are inside the "Scripts"-directory into the Scripts-directory of your Reaper-Ressources-Folder.<br>
+Step 3: Open the file "reaper-kb.ini" from the ressources-folder of Reaper with a texteditor. Open the file "reaper-kb.txt" from the downloaded archive as well in a texteditor.<br>
+Step 4: Copy the entries from the "reaper-kb.TXT" and paste them into the "reaper-kb.INI" file AFTER the SCR-Entries and BEFORE the KEY entries. Save the file.<br>
+Step 5: Start Reaper.<p>
+
+<h4>How to use the API in your LUA-Script</h4>
+If you want to use the Ultraschall Framework-Functions in your script, just add the following lines:<p>
+<pre style="background-color:#DDDDDD;">
+<code>
+-- Ultraschall Functions-API
+-- include the following lines
+
+US_Functions="ON"                 -- Turn OFF, if you don't want the Functions-API
+                                  -- Turn ON, if you want the Functions-API
+US_DataStructures="ON"            -- Turn OFF, if you don't want the DataStructures-API
+                                  -- Turn ON, if you want the DataStructures-API
+US_GraphicsFunctionsLibrary="ON"  -- Turn OFF, if you don't want the Graphics-Library-API
+                                  -- Turn ON, if you want the Graphics-Library-API
+US_SoundFunctionsLibrary="ON"     -- Turn OFF, if you don't want the Graphics-Library-API
+                                  -- Turn ON, if you want the Graphics-Library-API      
+US_VideoFunctionsLibrary="ON"     -- Turn OFF, if you don't want the Graphics-Library-API
+                                  -- Turn ON, if you want the Graphics-Library-API                              
+US_BetaFunctions="OFF"               -- Only has an effect, if ultraschall_functions_api_Beta.lua exists in Scripts-folder
+                                  -- Turn OFF, if you don't want BETA-Api-Functions
+                                  -- Turn ON, if you want BETA-Api-Functions
+local info = debug.getinfo(1,'S');
+script_path = info.source:match[[^@?(.*[\/])[^\/]-$]]
+US_API = dofile(script_path .. "ultraschall_api.lua")
+</code>
+</pre>
+
+As you can see, the Framework contains several parts, that you can turn ON or OFF, depending on if you need them or not. Though: only US_Functions is implemented yet, the others will follow over time.<p>
+Now that you've included the necessary API-lines, we can test, if the framework was sucessfully installed by calling the function:<p>
+<pre style="background-color:#DDDDDD;">
+<code>
+ultraschall.ApiTest()
+</code>
+</pre>
+
+directly under(!) the ultraschall.API-line. Run the script by saving it with Ctrl-S. If everything worked right, several messageboxes will appear that tell you, if the API-works and which of the API-parts you've turned on or off.<p>
+Voila: now you can program the Ultraschall-Framework.<p>
+
+<h4>How to use Beta Functions</h4>
+Before new functions will be released with a next Ultraschall-Release, they are in beta-stage. They will be available at <a href="http://www.mespotine.de/Ultraschall/US_Framework.html#Beta">the Beta-section</a>. Just download the archive, open it, put the .lua-scripts into the "Scripts"-folder with the ressources-folder of Reaper.<p>
+Voila, you can use these new Beta-Functions, if you turned them ON in the variable "US_BetaFunctions" (see "How to use the API in your LUA-Script").<p>
+Keep in mind: they are beta. They will change behavior, maybe change their parameters or disappear at all in the final release! <p>
+
+<h4>Bugreporting, Feature-requests and all the rest</h4>
+If you find any bugs or itches and want to report them, I suggest you the following procedure:<br>
+a) Make notes of: what operating-system you use(Mac, Win, Linux), which Reaper-version, which SWS-Version and which Ultraschall-Framework-Version.<br>
+b) Write down, what you wanted to do, what you expected to happen and what has happened instead. Make it as detailed as possible(a screenvideo i.e. would be perfect), as more information helps to find out, where the problem lies. It's always better to write too much, than the other way around.<br>
+c) Send these notes as eMail: lspmp3@yahoo.de(for framework-related stuff only!!) or go to <a href="http://www.sendegate.de">sendegate.de</a> into the Ultraschall-section.<p>
+Bugreports that contain only a "it doesn't work" and "I expected it to work" will be ignored gracefully ;)<p>
+If you have feature-requests, we have open ears. Keep in mind, not everything you find a good idea actually is one. So we may or may not take on your idea, change and rework it into a way, that benefits all, not just your particular use-case. When in doubt, just try it!<br>
+Keep also in mind: there are limitations. Some cool features we all would love to have, simply aren't implementable. Que sera, sera...<p>
+For your comments just send a mail at: lspmp3@yahoo.de(for framework-related stuff only!!) or go to <a href="http://www.sendegate.de">sendegate.de</a> into the Ultraschall-section.<p>
+PS: If you know how to implement impossible things or do things better than the current implementation, you are welcome to donate your improved codes. :)<p>
+
+<h4>License</h4>
+################################################################################<br>
+# <br>
+# Copyright (c) 2014-2017 Ultraschall (http://ultraschall.fm)<br>
+# <br>
+# Permission is hereby granted, free of charge, to any person obtaining a copy<br>
+# of this software and associated documentation files (the "Software"), to deal<br>
+# in the Software without restriction, including without limitation the rights<br>
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>
+# copies of the Software, and to permit persons to whom the Software is<br>
+# furnished to do so, subject to the following conditions:<br>
+# <br>
+# The above copyright notice and this permission notice shall be included in<br>
+# all copies or substantial portions of the Software.<br>
+# <br>
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>
+# THE SOFTWARE.<br>
+# <br>
+################################################################################<p>
+
+Reaper and the Reaper-Logo are trademarks of cockos inc and can be found at <a href="http://www.reaper.fm">reaper.fm</a><p>
+The SWS-logo has been taken from the SWS-extension-project, which can be found at <a href="http://www.sws-extension.org/">sws-extension.org</a><p>
+<br>
+<h3>The Functions-Reference</h3>
+
+<table style="font-size:10pt;">
+<tr><td> </td><td></td></tr>
+<tr><td><h3>Helper functions</h3></td><td></td></tr>
+<tr><td><a href="#ApiTest">ApiTest</a></td></tr>
+<tr><td> </td></tr>
+<tr><td><a href="#Msg">Msg</a></td>
+<td><a href="#GetPath">GetPath</a></td>
+<td><a href="#GetPartialString">GetPartialString</a></td>
+<td><a href="#SecondsToTime">SecondsToTime</a></td></tr>
+<tr><td><a href="#TimeToSeconds">TimeToSeconds</a></td>
+<td><a href="#RunCommand">RunCommand</a></td>
+<td><a href="#ToggleStateAction">ToggleStateAction</a></td>
+<td><a href="#RefreshToolbar_Action">RefreshToolbar_Action</a></td></tr>
+<tr><td><a href="#ToggleStateButton">ToggleStateButton</a></td>
+<td><a href="#Notes2CSV">Notes2CSV</a></td>
+<td><a href="#CSV2Lines">CSV2Lines</a></td>
+<td><a href="#CSV2IndividualLines">CSV2IndividualLines</a></td></tr>
+<tr><td><a href="#RGB2Num">RGB2Num</a></td>
+<td><a href="#RGB2Grayscale">RGB2Grayscale</a></td>
+<td><a href="#RoundNumber">RoundNumber</a></td>
+<td><a href="#IsItemInTrack">IsItemInTrack</a></td></tr>
+<tr><td><a href="#WriteValueToFile">WriteValueToFile</a></td>
+</tr>
+
+<tr><td><h3> </h3> <br> <br></td><td></td></tr>
+<tr><td><h3>Configuration-Files Management</h3> </td><td></td></tr>
+<tr><td><strong>Ultraschall.ini</strong> </td><td></td></tr>
+<tr><td><a href="#SetUSExternalState">SetUSExternalState</a></td>
+<td><a href="#GetUSExternalState">GetUSExternalState</a></td>
+<td><a href="#CountUSExternalState_sec">CountUSExternalState_sec</a></td>
+<td><a href="#CountUSExternalState_key">CountUSExternalState_key</a></td></tr>
+<tr><td><a href="#EnumerateUSExternalState_sec">EnumerateUSExternalState_sec</a></td>
+<td><a href="#EnumerateUSExternalState_key">EnumerateUSExternalState_key</a></td></tr>
+
+<tr><td><h3> </h3> <br> <br></td><td></td></tr>
+<tr><td><h3>Track Management</h3> </td><td></td></tr>
+<tr><td><strong>Get Track States</strong> </td><td></td></tr>
+<tr><td><a href="#GetTrackName">GetTrackName</a></td>
+<td><a href="#GetTrackPeakColorState">GetTrackPeakColorState</a></td>
+<td><a href="#GetTrackBeatState">GetTrackBeatState</a></td>
+<td><a href="#GetTrackAutoRecArmState">GetTrackAutoRecArmState</a></td></tr>
+<tr><td><a href="#GetTrackMuteSoloState">GetTrackMuteSoloState</a></td>
+<td><a href="#GetTrackIPhaseState">GetTrackIPhaseState</a></td>
+<td><a href="#GetTrackIsBusState">GetTrackIsBusState</a></td>
+<td><a href="#GetTrackBusCompState">GetTrackBusCompState</a></td></tr>
+<tr><td><a href="#GetTrackShowInMixState">GetTrackShowInMixState</a></td>
+<td><a href="#GetTrackFreeModeState">GetTrackFreeModeState</a></td>
+<td><a href="#GetTrackRecState">GetTrackRecState</a></td>
+<td><a href="#GetTrackVUState">GetTrackVUState</a></td></tr>
+<tr><td><a href="#GetTrackHeightState">GetTrackHeightState</a></td>
+<td><a href="#GetTrackINQState">GetTrackINQState</a></td>
+<td><a href="#GetTrackNChansState">GetTrackNChansState</a></td>
+<td><a href="#GetTrackBypFXState">GetTrackBypFXState</a></td></tr>
+<tr><td><a href="#GetTrackPerfState">GetTrackPerfState</a></td>
+<td><a href="#GetTrackMIDIOutState">GetTrackMIDIOutState</a></td>
+<td><a href="#GetTrackMainSendState">GetTrackMainSendState</a></td>
+<td><a href="#GetTrackGroupFlagsState">GetTrackGroupFlagsState</a></td></tr>
+<tr><td><a href="#GetTrackLockState">GetTrackLockState</a></td>
+<td><a href="#GetTrackLayoutNames">GetTrackLayoutNames</a></td>
+<td><a href="#GetTrackAutomodeState">GetTrackAutomodeState</a></td>
+<td><a href="#GetTrackIcon_Filename">GetTrackIcon_Filename</a></td></tr>
+<tr><td><a href="#GetTrackMidiInputChanMap">GetTrackMidiInputChanMap</a></td>
+<td><a href="#GetTrackMidiCTL">GetTrackMidiCTL</a></td>
+<td><a href="#"></a></td></tr>
+<tr><td><strong> &nbsp;</strong> </td><td></td></tr>
+<tr><td><strong>Set Track States</strong> </td><td></td></tr>
+<tr><td><a href="#SetTrackName">SetTrackName</a></td>
+<td><a href="#SetTrackPeakColorState">SetTrackPeakColorState</a></td>
+<td><a href="#SetTrackBeatState">SetTrackBeatState</a></td>
+<td><a href="#SetTrackAutoRecArmState">SetTrackAutoRecArmState</a></td></tr>
+<tr><td><a href="#SetTrackMuteSoloState">SetTrackMuteSoloState</a></td>
+<td><a href="#SetTrackIPhaseState">SetTrackIPhaseState</a></td>
+<td><a href="#SetTrackIsBusState">SetTrackIsBusState</a></td>
+<td><a href="#SetTrackBusCompState">SetTrackBusCompState</a></td></tr>
+<tr><td><a href="#SetTrackShowInMixState">SetTrackShowInMixState</a></td>
+<td><a href="#SetTrackFreeModeState">SetTrackFreeModeState</a></td>
+<td><a href="#SetTrackRecState">SetTrackRecState</a></td>
+<td><a href="#SetTrackVUState">SetTrackVUState</a></td></tr>
+<tr><td><a href="#SetTrackHeightState">SetTrackHeightState</a></td>
+<td><a href="#SetTrackINQState">SetTrackINQState</a></td>
+<td><a href="#SetTrackNChansState">SetTrackNChansState</a></td>
+<td><a href="#SetTrackBypFXState">SetTrackBypFXState</a></td></tr>
+<tr><td><a href="#SetTrackPerfState">SetTrackPerfState</a></td>
+<td><a href="#SetTrackMIDIOutState">SetTrackMIDIOutState</a></td>
+<td><a href="#SetTrackMainSendState">SetTrackMainSendState</a></td>
+<td><a href="#SetTrackLockState">SetTrackLockState</a></td></tr>
+<tr><td><a href="#SetTrackLayoutNames">SetTrackLayoutNames</a></td>
+<td><a href="#SetTrackAutomodeState">SetTrackAutomodeState</a></td>
+<td><a href="#SetTrackIcon_Filename">SetTrackIcon_Filename</a></td>
+<td><a href="#SetTrackMidiInputChanMap">SetTrackMidiInputChanMap</a></td></tr>
+<tr><td><a href="#SetTrackMidiCTL">SetTrackMidiCTL</a></td>
+<td><a href="#"></a></td></tr>
+
+<tr><td><h3> </h3> <br> <br></td><td></td></tr>
+<tr><td><h3>Navigation</h3> </td><td></td></tr>
+<tr><td><a href="#ToggleScrollingDuringPlayback">ToggleScrollingDuringPlayback</a></td>
+<td><a href="#SetPlayCursor_WhenPlaying">SetPlayCursor_WhenPlaying</a></td>
+<td><a href="#SetPlayAndEditCursor_WhenPlaying">SetPlayAndEditCursor_WhenPlaying</a></td>
+<td><a href="#JumpForwardBy">JumpForwardBy</a></td></tr>
+<tr><td><a href="#JumpBackwardBy">JumpBackwardBy</a></td>
+<td><a href="#JumpForwardBy_Recording">JumpForwardBy_Recording</a></td>
+<td><a href="#JumpBackwardBy_Recording">JumpBackwardBy_Recording</a></td>
+<td><a href="#GetNextClosestItemEdge">GetNextClosestItemEdge</a></td></tr>
+<tr><td><a href="#GetPreviousClosestItemEdge">GetPreviousClosestItemEdge</a></td>
+<td><a href="#GetClosestNextMarker">GetClosestNextMarker</a></td>
+<td><a href="#GetClosestPreviousMarker">GetClosestPreviousMarker</a></td>
+<td><a href="#GetClosestNextRegion">GetClosestNextRegion</a></td></tr>
+<tr><td><a href="#GetClosestPreviousRegion">GetClosestPreviousRegion</a></td>
+<td><a href="#GetClosestGoToPoints">GetClosestGoToPoints</a></td>
+<td><a href="#"></a></td>
+<td><a href="#"></a></td></tr>
+
+<tr><td><h3> </h3> <br> <br></td><td></td></tr>
+<tr><td><h3>Cough-Button</h3> </td><td></td></tr>
+<tr><td><strong>Muting tracks within envelope-lanes</strong> </td><td></td></tr>
+<tr><td><a href="#ToggleMute">ToggleMute</a></td>
+<td><a href="#ToggleMute_TrackObject">ToggleMute_TrackObject</a></td>
+<td><a href="#GetNextMuteState">GetNextMuteState</a></td>
+<td><a href="#GetPreviousMuteState">GetPreviousMuteState</a></td></tr>
+<tr><td><a href="#GetNextMuteState_TrackObject">GetNextMuteState_TrackObject</a></td>
+<td><a href="#GetPreviousMuteState_TrackObject">GetPreviousMuteState_TrackObject</a></td>
+<td><a href="#CountMuteEnvelopePoints">CountMuteEnvelopePoints</a></td>
+</tr>
+
+
+<tr><td><h3> </h3> <br> <br></td><td></td></tr>
+<tr><td><h3>Markers</h3> </td><td></td></tr>
+<tr><td><strong>Adding Markers</strong></td><td></td></tr>
+
+<tr><td><a href="#AddNormalMarker">AddNormalMarker</a></td>
+<td><a href="#AddPodRangeRegion">AddPodRangeRegion</a></td>
+<td><a href="#AddChapterMarker">AddChapterMarker</a></td>
+<td><a href="#AddEditMarker">AddEditMarker</a></td></tr>
+<tr><td><a href="#AddDummyMarker">AddDummyMarker</a></td></tr>
+
+<tr><td><strong> </strong><p></td><td></td></tr>
+<tr><td><strong>Counting Markers</strong></td><td></td></tr>
+<tr><td><a href="#CountNormalMarkers">CountNormalMarkers</a></td>
+</td>
+<td><a href="#CountChapterMarkers">CountChapterMarkers</a></td>
+<td><a href="#CountEditMarkers">CountEditMarkers</a></td>
+<td><a href="#CountDummyMarkers">CountDummyMarkers</a></td></tr>
+
+<tr><td><strong> </strong><p></td><td></td></tr>
+<tr><td><strong>Enumerating and Getting Markerdata</strong></td><td></td></tr>
+<tr><td><a href="#GetPodRangeRegion">GetPodRangeRegion</a></td>
+<td><a href="#EnumerateNormalMarkers">EnumerateNormalMarkers</a></td>
+<td><a href="#EnumerateChapterMarkers">EnumerateChapterMarkers</a></td>
+<td><a href="#EnumerateDummyMarkers">EnumerateDummyMarkers</a></td></tr>
+<tr>
+<td><a href="#EnumerateEditMarkers">EnumerateEditMarkers</a></td>
+<td><a href="#GetAllChapterMarkers">GetAllChapterMarkers</a></td>
+<td><a href="#GetAllEditMarkers">GetAllEditMarkers</a></td>
+<td><a href="#GetAllNormalMarkers">GetAllNormalMarkers</a></td></tr>
+<tr><td><a href="#GetAllMarkers">GetAllMarkers</a></td></tr>
+
+<tr><td><strong> </strong><p></td><td></td></tr>
+<tr><td><strong>Setting Markers</strong></td><td></td></tr>
+<tr><td><a href="#SetNormalMarker">SetNormalMarker</a></td>
+<td><a href="#SetEditMarker">SetEditMarker</a></td>
+<td><a href="#SetChapterMarker">SetChapterMarker</a></td>
+<td><a href="#SetPodRangeRegion">SetPodRangeRegion</a></td></tr>
+
+<tr><td><strong> </strong><p></td><td></td></tr>
+<tr><td><strong>Deleting Markers</strong></td><td></td></tr>
+<tr><td><a href="#DeletePodRangeRegion">DeletePodRangeRegion</a></td>
+<td><a href="#DeleteNormalMarker">DeleteNormalMarker</a></td>
+<td><a href="#DeleteChapterMarker">DeleteChapterMarker</a></td></tr>
+<tr><td><a href="#DeleteEditMarker">DeleteEditMarker</a></td>
+<td><a href="#DeleteDummyMarker">DeleteDummyMarker</a></td></tr>
+
+<tr><td><strong> </strong><p></td><td></td></tr>
+<tr><td><strong>Export Markers</strong></td><td></td></tr>
+<td><a href="#ExportChapterMarkersToFile">ExportChapterMarkersToFile</a></td>
+<td><a href="#ExportEditMarkersToFile">ExportEditMarkersToFile</a></td>
+<td><a href="#ExportNormalMarkersToFile">ExportNormalMarkersToFile</a></td></tr>
+
+<tr><td><strong> </strong><p></td><td></td></tr>
+<tr><td><strong>Import Markers</strong></td><td></td></tr>
+<tr><td><a href="#ImportChaptersFromFile">ImportChaptersFromFile</a></td>
+<td><a href="#ImportChaptersFromFile_Filerequester">ImportChaptersFromFile_Filerequester</a></td>
+<td><a href="#ImportEditFromFile">ImportEditFromFile</a></td>
+<td><a href="#ImportEditFromFile_Filerequester">ImportEditFromFile_Filerequester</a></td></tr>
+<tr><td><a href="#ImportMarkersFromFile">ImportMarkersFromFile</a></td>
+<td><a href="#ImportMarkersFromFile_Filerequester">ImportMarkersFromFile_Filerequester</a></td></tr>
+
+<tr><td><strong> </strong><p></td><td></td></tr>
+<tr><td><strong>Convert Markers</strong></td><td></td></tr>
+<tr><td><a href="#MarkerToEditMarker">MarkerToEditMarker</a></td>
+<td><a href="#MarkerToChapterMarker">MarkerToChapterMarker</a></td>
+<td><a href="#MarkerToDummyMarker">MarkerToDummyMarker</a></td>
+<td><a href="#ChapterToEditMarker">ChapterToEditMarker</a></td></tr>
+<tr><td><a href="#ChapterToDummyMarker">ChapterToDummyMarker</a></td>
+<td><a href="#ChapterToMarker">ChapterToMarker</a></td>
+<td><a href="#EditToChapterMarker">EditToChapterMarker</a></td>
+<td><a href="#EditToDummyMarker">EditToDummyMarker</a></td></tr>
+<tr><td><a href="#EditToMarker">EditToMarker</a></td>
+<td><a href="#DummyToChapterMarker">DummyToChapterMarker</a></td>
+<td><a href="#DummyToEditMarker">DummyToEditMarker</a></td>
+<td><a href="#DummyToMarker">DummyToMarker</a></td></tr>
+</table>
+
+<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ApiTest">ultraschall.ApiTest()</a></i><p></p>
+Displays messages to show, which parts of the Ultraschall-API are turned on and which are turned off.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="Msg">ultraschall.Msg(string val)</a></i><p></p>
+prints a message to the Reaper Console<p>
+parameter:<br>
+<i>val</i> - your message as a string <p>
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetPath">string path = ultraschall.GetPath(string str, string sep)</a></i><p></p>
+returns the path of a filename-string<br>
+returns -1 if it doesn't work <p>
+parameter:<br>
+<i>str</i> - the path with filename you want to process<br>
+<i>sep</i> - a seperator, with which the function knows, how to seperate filename from path<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetPartialString">string partial_string = ultraschall.GetPartialString(string str, string sep1, string sep2)</a></i><p></p>
+returns the part of a filename-string between sep1 and sep2<br>
+returns -1 if it doesn't work, no sep1 or sep2 exist <p>
+
+parameters:<br>
+str-string to be processed<br>
+<i>sep1</i>- seperator on the "left" side of the partial string<br>
+<i>sep2</i> - seperator on the "right" side of the partial string<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SecondsToTime">string time_string = ultraschall.SecondsToTime(number pos)</a></i><p></p>
+converts timeposition in seconds(pos) to a timestring (h)hh:mm:ss.mss<p>
+parameter:<br>
+<i>pos</i> - timeposition in seconds<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="TimeToSeconds">number position = ultraschall.TimeToSeconds(string timestring)</a></i><p></p>
+converts timestring (h)hh:mm:ss.mss to a time in seconds(pos)<p>
+
+returns -1 if the timestring is invalid<p>
+parameter:<br>
+<i>timestring</i> - string of the time in the format hh:mm:ss.mss. More positions in hours(i.e. hhhh) and milliseconds(i.e. mssss) are possible.
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="RunCommand">ultraschall.RunCommand(string actioncommand_id)  </a></i><p></p>
+runs a command by its ActionCommandID(instead of the CommandID-number)<p>
+parameter:<br>
+<i>actioncommand_id</i> - the ActionCommandID of the Command/Script/Action you want to run.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ToggleStateAction">boolean retval = ultraschall.ToggleStateAction(integer section, string actioncommand_id, integer state)</a></i><p></p>
+Toggles state of an action using the actioncommand_id(instead of the CommandID-number)<br>
+returns current state of the action after toggling<p>
+If you have a button associated, you'll need to use <a href="#RefreshToolbar_Action">ultraschall.RefreshToolbar_Action("_ActionCommandID")</a> or reaper.RefreshToolbar(commandid_nr) after it!<p>
+parameters:<br>
+<i>section</i> - section (usually 0 for main)<br>
+<i>actioncommand_id</i> - the ActionCommandID of the Action you'll want to toggle<br>
+<i>state</i> - 0 for off, 1 for on<br>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="RefreshToolbar_Action"> ultraschall.RefreshToolbar_Action(integer section, string actioncommand_id)</a></i><p></p>
+Refreshes a toolbarbutton with an ActionCommandID(instead of the CommandID-number)<p>
+parameters:<br>
+<i>section</i> - section<br>
+<i>actioncommand_id</i> - ActionCommandID of the action, associated with the toolbarbutton <p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ToggleStateButton">boolean retval = ultraschall.ToggleStateButton(integer section, string actioncommand_id, integer state)</a></i><p></p>
+Toggles state and refreshes the button of an actioncommand_id<p>
+<i>section</i> - section (usually 0 for main)<br>
+<i>actioncommand_id</i> - the ActionCommandID of the Action you'll want to toggle<br>
+<i>state</i> - 0 for off, 1 for on<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="Notes2CSV">csv retval = ultraschall.Notes2CSV()</a></i><p></p>
+Gets the project's notes and returns it as a CSV.<p>
+returns a CSV of the project's notes.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CSV2Line">string values = ultraschall.CSV2Line (string csv_line)</a></i><p></p>
+converts a string of csv-values into a string with all values and without the ,-seperators<p>
+
+returns a string<p>
+parameter:<br>
+<i>csv_line</i> - a string with all the csv-values.
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CSV2IndividualLines">array individual_values = ultraschall.CSV2IndividualLines(string csv_line)</a></i><p></p>
+convert a csv-string to an array of the individual values<p>
+
+returns an array.<p>
+parameter:<br>
+<i>csv_line</i> - a string as a csv, with all values included and seperated by ,<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="RGB2Num">integer combined_colorvalue = ultraschall.RGB2Num(integer red, integer green, integer blue)</a></i><p></p>
+convert r,g,b into one integer-value that will be returned.<p>
+parameters:<br>
+<i>red</i> - red-value betweeen 0 and 255. Can be negative to creative colorvalues for subtraction<br>
+<i>green</i> - green-value betweeen 0 and 255. Can be negative to creative colorvalues for subtraction<br>
+<i>blue</i> - blue-value betweeen 0 and 255. Can be negative to creative colorvalues for subtraction<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="RGB2Grayscale">integer graycolor = ultraschall.RGB2Grayscale(red,green,blue)</a></i><p></p>
+converts rgb to a grayscale value. Works native on Mac as well on Windows, no color conversion needed.<p>
+ parameters: <br>
+ <i>red</i> - red-color-value 0-255<br>
+ <i>green</i> - green-color-value 0-255<br>
+ <i>blue</i> - blue-color-value 0-255<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="RoundNumber">integer retval = ultraschall.RoundNumber(number number)</a></i><p></p> 
+returns a rounded value of the parameter number. .5 and higher rounds up, lower than .5 round down.<p>
+parameter:<br>
+<i>number</i> - the floatingpoint number, you'd like to have rounded.<p></p>
+ 
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="IsItemInTrack">boolean = ultraschall.IsItemInTrack(tracknumber, itemIDX)</a></i><p></p>
+checks, whether a given item is part of the track tracknumber<br>
+returns true, if the itemIDX is part of track tracknumber, false if not, -1 if no such itemIDX or Tracknumber available<p>
+parameters:<br>
+<i>itemIDX</i> - the number of the item to check of<br>
+<i>tracknumber</i> - the number of the track to check in<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="WriteValueToFile"> integer retval = ultraschall.WriteValueToFile(string filename_with_path, string/integer/number value)</a></i><p></p>
+Writes value to filename_with_path. Will replace any previous content of the file! Returns -1 in case of failure, 1 in case of sucess.<br>
+Keep in mind, that you need to escape \ by writing \\, or it will not work<p>
+parameters:<br>
+<i>filename_with_path</i> - the filename with it's path<br>
+<i>value</i> - the value to export, can be a long string that includes newlines and stuff. nil is not allowed!<p></p>
+ 
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetUSExternalState">boolean = ultraschall.SetUSExternalState(section, key, value)</a></i><p></p>
+stores values into ultraschall.ini. Returns true if sucessful, false if unsucessful.<p>
+parameters: <br>
+<i>section</i> - the section of the ultraschall.ini. An = is not allowed!<br>
+<i>key</i> - the key within the section<br>
+<i>value</i> - the value you want to set.<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetUSExternalState">integer value_length, string value = ultraschall.GetUSExternalState(section, key)</a></i><p></p>
+gets a value from ultraschall.ini. Returns length of value(integer) and the value itself(string).<p>
+parameters:<br>
+<i>section</i> - the section of the ultraschall.ini.<br>
+<i>key</i> - the key of which you want it's value.<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CountUSExternalState_sec">integer section_count = ultraschall.CountUSExternalState_sec()</a></i><p></p>
+returns the number of [sections] in the ultraschall.ini<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CountUSExternalState_key">integer key_count = ultraschall.CountUSExternalState_key(section)</a></i><p></p>
+returns the number of keys in the given [section] in ultraschall.ini<p>
+parameter:<br>
+<i>section</i> - the section of the ultraschall.ini, of which you want the number of keys.<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EnumerateUSExternalState_sec">string section_name = ultraschall.EnumerateUSExternalState_sec(number)</a></i><p></p>
+returns name of the numberth section in ultraschall.ini or nil if invalid<p></p>
+parameter:<br>
+<i>number</i> - the number of section, whose name you want to know<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EnumerateUSExternalState_key">string key_name = ultraschall.EnumerateUSExternalState_key(section, number)</a></i><p></p> 
+returns name of a numberth key within a section in ultraschall.ini or nil if invalid or not existing<p>
+parameters:<br>
+<i>section</i> - the section within ultraschall.ini, where the key is stored.<br>
+<i>number</i> - the number of the key, whose name you want to know.<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackName">string trackname = ultraschall.GetTrackName(integer tracknumber)</a></i><p></p>
+returns name of the track.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackPeakColorState">string PeakColorState = ultraschall.GetTrackPeakColorState(integer tracknumber)</a></i><p></p>
+returns state of the PeakColor-number, which is the trackcolor. Will be returned as string, to avoid losing trailing or preceding zeros.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackBeatState">number BeatState = ultraschall.GetTrackBeatState(integer tracknumber)</a></i><p></p>
+returns Track-BeatState. <br>
+<i>BeatState</i> - Track Time base<br>
+<div style="padding-left:10%">
+-1 - Project time base<br>
+0 - Time<br>
+1 - Beats position, length, rate<br>
+2 - Beats position only<br>
+</div><br>
+
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackAutoRecArmState">integer AutoRecArmState = ultraschall.GetTrackAutoRecArmState(integer tracknumber)</a></i><p></p>
+returns if the track is in AutoRecArm, when selected. Returns nil if not.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackMuteSoloState">integer Mute, integer Solo, integer SoloDefeat = ultraschall.GetTrackMuteSoloState(integer tracknumber)</a></i><p></p>
+returns states of Mute and Solo-Buttons.<br>
+Mute set to 0 - Mute off, 1 - Mute On<br>
+Solo set to 0 - Solo off, 1 - Solo ignore routing, 2 - Solo on<br>
+SoloDefeat set to 0 - off, 1 - on<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackIPhaseState">number IPhase = ultraschall.GetTrackIPhaseState(integer tracknumber)</a></i><p></p>
+returns state of the IPhase. If the Phase-button is pressed, it will return 1, else it will return 0.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackIsBusState">integer busstate1, integer busstate2 = ultraschall.GetTrackIsBusState(integer tracknumber)</a></i><p></p>
+returns busstate of the track, means: if it's a folder track<p>
+Appliable to the Master track as well, though it makes no sense, as you can't add sub/foldertracks to the Master-Track.<p>
+
+track is no folder: busstate1=0, busstate2=0<br>
+track is a folder: busstate1=1, busstate2=1<br>
+track is a folder but view of all subtracks not compactible: busstate1=1, busstate2=2<br>
+track is last track in folder(no tracks of subfolders follow): busstate1=2, busstate2=-1<br>
+
+
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackBusCompState">number BusCompState1, number BusCompState2 = ultraschall.GetTrackBusCompState(integer tracknumber)</a></i><p></p>
+returns BusCompState, if the tracks in a folder are compacted or not.<p>
+BusCompState1:<br>
+0 - no compacting<br>
+1 - compacted tracks<br>
+2 - minimized tracks<p>
+BusCompState2:<br>
+0 - unknown<br>
+1 - unknown<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackShowInMixState">integer MCPvisible, number MCP_FX_visible, number MCPTrackSendsVisible, integer TCPvisible, number ShowInMix5, number ShowInMix6, number ShowInMix7, number ShowInMix8 = ultraschall.GetTrackShowInMixState(integer tracknumber)</a></i><p></p>
+returns Show in Mix-state.<p>
+MCPvisible - 0 invisible, 1 visible<br>
+MCP_FX_visible - 0 visible, 1 FX-Parameters visible, 2 invisible<br>
+MCPTrackSendsVisible - 0 & 1.1 and higher TrackSends in MCP visible, every other number makes them invisible<br>
+TCPvisible - 0 track is invisible in TCP, 1 track is visible in TCP<br>
+ShowInMix5 - unknown<br>
+ShowInMix6 - unknown<br>
+ShowInMix7 - unknown<br>
+ShowInMix8 - unknown<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackFreeModeState">integer FreeModeState = ultraschall.GetTrackFreeModeState(integer tracknumber)</a></i><p></p>
+returns if the track has track free item positioning enabled(1) or not(0).<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackRecState">integer ArmState, integer InputChannel, integer MonitorInput, integer RecInput, integer MonitorWhileRec, integer presPDCdelay, integer RecordingPath = ultraschall.GetTrackRecState(integer tracknumber)</a></i><p></p>
+returns Track Rec State.<p></p>
+<i>ArmState</i> - returns 1(armed) or 0(unarmed)<br> <br>
+<i>InputChannel</i> - returns the InputChannel
+<div style="padding-left:10%">
+-1 - No Input<br>
+1-16(more?) - Mono Input Channel<br>
+1024 - Stereo Channel 1 and 2<br>
+1026 - Stereo Channel 3 and 4<br>
+1028 - Stereo Channel 5 and 6<br>
+...<br>
+5056 - Virtual MIDI Keyboard all Channels<br>
+5057 - Virtual MIDI Keyboard Channel 1<br>
+...<br>
+5072 - Virtual MIDI Keyboard Channel 16<br>
+5088 - All MIDI Inputs - All Channels<br>
+5089 - All MIDI Inputs - Channel 1<br>
+...<br>
+5104 - All MIDI Inputs - Channel 16<br>
+</div><br>
+<i>Monitor Input</i> - 0 monitor off, 1 monitor on, 2 monitor on tape audio style<br> <br>
+<i>RecInput</i> - returns rec-input type<br>
+<div style="padding-left:10%">0 input(Audio or Midi), <br>
+1 Record Output Stereo<br>
+2 Disabled, Input Monitoring Only<br>
+3 Record Output Stereo, Latency Compensated<br>
+4 Record Output MIDI<br>
+5 Record Output Mono<br>
+6 Record Output Mono, Latency Compensated<br>
+7 MIDI overdub, <br>
+8 MIDI replace, <br>
+9 MIDI touch replace, <br>
+10 Record Output Multichannel<br>
+11 Record Output Multichannel, Latency Compensated <br>
+12 Record Input Force Mono<br>
+13 Record Input Force Stereo<br>
+14 Record Input Force Multichannel<br>
+15 Record Input Force MIDI<br>
+16 MIDI latch replace<br>
+</div><br>
+<i>MonitorWhileRec</i> - Monitor Trackmedie when recording, 0 is off, 1 is on<br> <br>
+<i>presPDCdelay</i> - preserve PDC delayed monitoring in media items<br> <br>
+<i>RecordingPath</i> - 0 Primary Recording-Path only, 1 Secondary Recording-Path only, 2 Primary Recording Path and Secondary Recording Path(for invisible backup)<br> <br>
+
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackVUState">integer VUState = ultraschall.GetTrackVUState(integer tracknumber)</a></i><p></p>
+returns VUState. 0 if MultiChannelMetering is off, 2 if MultichannelMetering is on, 3 Metering is off<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackHeightState">integer height, number heightstate2 = ultraschall.GetTrackHeightState(integer tracknumber)</a></i><p></p>
+returns height of the track.<p>
+height - 24 up to 443<br>
+heightstate2 - 0 - use height, 1 - compact the track and ignore the height<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackINQState">number Track_INQ1, number Track_INQ2, number Track_INQ3, number Track_INQ4, number Track_INQ5, number Track_INQ6, number Track_INQ7, number Track_INQ8 =  ultraschall.GetTrackINQState(integer tracknumber)</a></i><p></p>
+returns INQ-state of the track.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackNChansState">integer channelnumber = ultraschall.GetTrackNChansState(integer tracknumber)</a></i><p></p>
+returns the number of channels for this track, as set in the routing.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackBypFXState">integer FXState = ultraschall.GetTrackBypFXState(integer tracknumber)</a></i><p></p>
+returns the off/bypass(0) or nobypass(1) state of the FX-Chain<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackPerfState">integer TrackPerfState = ultraschall.GetTrackPerfState(integer tracknumber)</a></i><p></p>
+returns TrackPerformance-state<p>
+<div style="padding-left:4%">
+0 - allow anticipative FX + allow media buffering<br>
+1 - allow anticipative FX + prevent media buffering <br>
+2 - prevent anticipative FX + allow media buffering<br>
+3 - prevent anticipative FX + prevent media buffering<br>
+settings seem to repeat with higher numbers (e.g. 4(like 0) - allow anticipative FX + allow media buffering)
+</div><br>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackMIDIOutState">integer MidiOutState = ultraschall.GetTrackMIDIOutState(integer tracknumber)</a></i><p></p>
+returns MIDI_Out-State, as set in the Routing-Settings<p>
+<div style="padding-left:4%">-1 no output<br>
+416 - microsoft GS wavetable synth - send to original channels<br>
+417-432 - microsoft GS wavetable synth - send to channel state minus 416<br>
+-31 - no Output, send to original channel 1<br>
+-16 - no Output, send to original channel 16<br>
+</div><br>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackMainSendState">integer MainSendOn, integer ParentChannels = ultraschall.GetTrackMainSendState(integer tracknumber)</a></i><p></p>
+returns, if Main-Send is on(1) or off(0) and the ParentChannels(0-63), as set in the Routing-Settings.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackGroupFlagsState">integer GroupState_as_Flags, array IndividualGroupState_Flags = ultraschall.GetTrackGroupFlagsState(integer tracknumber)</a></i><p></p>
+returns the state of the group-flags, as set in the menu Track Grouping Parameters. Returns a 23bit flagvalue as well as an array with 32 individual 23bit-flagvalues. You must use bitoperations to get the individual values.<p>
+
+<i>GroupState_as_Flags</i> - returns a flagvalue with 23 bits, that tells you, which grouping-flag is set in at least one of the 32 groups available.<br>
+returns -1 in case of failure<br>
+<br>
+the following flags are available:<br>
+<div style="padding-left:4%;">
+2^0 - Volume Master<br>
+2^1 - Volume Slave<br>
+2^2 - Pan Master<br>
+2^3 - Pan Slave<br>
+2^4 - Mute Master<br>
+2^5 - Mute Slave<br>
+2^6 - Solo Master<br>
+2^7 - Solo Slave<br>
+2^8 - Record Arm Master<br>
+2^9 - Record Arm Slave<br>
+2^10 - Polarity/Phase Master<br>
+2^11 - Polarity/Phase Slave<br>
+2^12 - Automation Mode Master<br>
+2^13 - Automation Mode Slave<br>
+2^14 - Reverse Volume<br>
+2^15 - Reverse Pan<br>
+2^16 - Do not master when slaving<br>
+2^17 - Reverse Width<br>
+2^18 - Width Master<br>
+2^19 - Width Slave<br>
+2^20 - VCA Master<br>
+2^21 - VCA Slave<br>
+2^22 - VCA pre-FX slave<br>
+</div><br>
+
+<i>IndividualGroupState_Flags</i> - returns an array with 23 entries. Every entry represents one of the GroupState_as_Flags, but it's value is a flag, that describes, in which of the 32 Groups a certain flag is set.<br>
+e.g. If Volume Master is set only in Group 1, entry 1 in the array will be set to 1. If Volume Master is set on Group 2 and Group 4, the first entry in the array will be set to 10.<br>
+refer to the upper GroupState_as_Flags list to see, which entry in the array is for which set flag, e.g. array[22] is VCA pre-F slave, array[16] is Do not master when slaving, etc<p>
+As said before, the values in each entry is a flag, that tells you, which of the groups is set with a certain flag. The following flags determine, in which group a certain flag is set:<br>
+<div style="padding-left:4%">
+2^0 - Group 1<br>
+2^1 - Group 2<br>
+2^2 - Group 3<br>
+2^3 - Group 4<br>
+...<br>
+2^30 - Group 31<br>
+2^31 - Group 32<br>
+</div><br>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackLockState">integer lockedstate = ultraschall.GetTrackLockState(integer tracknumber)</a></i><p></p>
+returns, if the track-controls of this track are locked(1) or not(0).<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackLayoutNames">string TCP_Layoutname, string MCP_Layoutname = ultraschall.GetTrackLayoutNames(integer tracknumber)</a></i><p></p>
+returns the current selected layouts for TrackControlPanel and MixerControlPanel for this track as strings. Returns nil, if default is set.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackAutomodeState">integer automodestate = ultraschall.GetTrackAutomodeState(integer tracknumber)</a></i><p></p>
+returns, if the automation-mode for envelopes of this track is set to 0 - trim/read, 1 - read, 2 - touch, 3 - write, 4 - latch.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackIcon_Filename">string filename_with_path = ultraschall.GetTrackIcon_Filename(integer tracknumber)</a></i><p></p>
+returns the filename with path for the track-icon of the current track. Returns nil, if no trackicon has been set.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackMidiInputChanMap">integer MidiInputChanMap_state = ultraschall.GetTrackMidiInputChanMap(integer tracknumber)</a></i><p></p>
+returns the state of the MIDIInputChanMap for the current track, as set in the Input-MIDI->Map Input to Channel menu. 0 for channel 1, 2 for channel 2, etc. Nil, if not existing.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetTrackMidiCTL">integer LinkedToMidiChannel, integer unknown = ultraschall.GetTrackMidiCTL(integer tracknumber)</a></i><p></p>
+returns linked to Midi channel and an unknown value. Nil if not existing.<p>
+parameter:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackName">boolean retval = ultraschall.SetTrackName(integer tracknumber, string name)</a></i><p></p>
+Set the name of a track.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>name</i> - new name of the track<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackPeakColorState">boolean retval = SetTrackPeakColorState(integer tracknumber, integer colorvalue)</a></i><p></p>
+Set the color of the track.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>colorvalue</i> - the color for the track<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackBeatState">boolean retval = ultraschall.SetTrackBeatState(integer tracknumber, integer beatstate)</a></i><p></p>
+Set the timebase for a track.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>beatstate</i> - tracktimebase for this track; -1 - Project time base, 0 - Time, 1 - Beats position, length, rate, 2 - Beats position only<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackAutoRecArmState">boolean retval = ultraschall.SetTrackAutoRecArmState(integer tracknumber, integer autorecarmstate)</a></i><p></p>
+Set the AutoRecArmState for a track.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>autorecarmstate</i> - autorecarmstate - 1 - autorecarm on, <> than 1 - off<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackMuteSoloState">boolean retval = ultraschall.SetTrackMuteSoloState(integer tracknumber, integer Mute, integer Solo, integer SoloDefeat)</a></i><p></p>
+Set the AutoRecArmState for a track.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>Mute</i> - 0 - Mute off, &lt;&gt; than 0 - on<br>
+<i>Solo</i> - 0 - off, &lt;&gt; than 0 - on<br>
+<i>Solo Defeat</i> - 0 - off, &lt;&gt; than 0 - on<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackIPhaseState">boolean retval = ultraschall.SetTrackIPhaseState(integer tracknumber, integer iphasestate)</a></i><p></p>
+Sets IPhase, the Phase-Buttonstate of the Track.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>iphasestate</i> - 0 - off, &lt;&gt; than 0 - on<br>
+<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackIsBusState">boolean retval = ultraschall.SetTrackIsBusState(integer tracknumber, integer busstate1, integer busstate2)</a></i><p></p>
+Sets ISBUS-state of the Track; if it's a folder track.<p>
+parameter-settings:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>busstate1=0, busstate2=0</i> - track is no folder<br>
+<i>busstate1=1, busstate2=1</i> - track is a folder<br>
+<i>busstate1=1, busstate2=2</i> - track is a folder but view of all subtracks not compactible<br>
+<i>busstate1=2, busstate2=-1</i> - track is last track in folder(no tracks of subfolders follow)<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackBusCompState">boolean retval = ultraschall.SetTrackBusCompState(integer tracknumber, integer buscompstate1, integer buscompstate2)</a></i><p></p>
+Sets BUSCOMP-state of the Track; if tracks in a folder are compacted or not.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>buscompstate1</i> - 0 - no compacting, 1 - compacted tracks, 2 - minimized tracks<br>
+<i>buscompstate2</i> - 0 - unknown, 1 - unknown<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackShowInMixState">boolean retval = ultraschall.SetTrackShowInMixState(integer tracknumber, integer MCPvisible, number MCP_FX_visible, number MCP_TrackSendsVisible, integer TCPvisible, number ShowInMix5, integer ShowInMix6, integer ShowInMix7, integer ShowInMix8)</a></i><p></p>
+Sets SHOWINMIX, that sets visibility of track in MCP and TCP.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>MCPvisible</i> - 0 invisible, 1 visible<br>
+<i>MCP_FX_visible</i> - 0 visible, 1 FX-Parameters visible, 2 invisible<br>
+<i>MCPTrackSendsVisible</i> - 0 & 1.1 and higher TrackSends in MCP visible, every other number makes them invisible<br>
+<i>TCPvisible</i> - 0 track is invisible in TCP, 1 track is visible in TCP<br>
+<i>ShowInMix5</i> - unknown<br>
+<i>ShowInMix6</i>- unknown<br>
+<i>ShowInMix7</i> - unknown<br>
+<i>ShowInMix8</i> - unknown<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackFreeModeState">boolean retval = ultraschall.SetTrackFreeModeState(integer tracknumber, integer freemodestate)</a></i><p></p>
+Sets FREEMODE-state; enables Track-Free Item Positioning.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>freemodestate</i> - 0 - off, 1 - on<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackRecState">boolean retval = ultraschall.SetTrackRecState(integer tracknumber, integer ArmState, integer InputChannel, integer MonitorInput, integer RecInput, integer MonitorWhileRec, integer presPDCdelay, integer RecordingPath)</a></i><p></p>
+Sets REC, that sets the Recording-state of the track.<p></p>
+parameters:<br>
+<i>ArmState</i> - returns 1(armed) or 0(unarmed)<br>
+
+<i>InputChannel</i> - the InputChannel
+<div style="padding-left:4%;">-1 - No Input<br>
+1-16(more?) - Mono Input Channel<br>
+1024 - Stereo Channel 1 and 2<br>
+1026 - Stereo Channel 3 and 4<br>
+1028 - Stereo Channel 5 and 6<br>
+...<br>
+5056 - Virtual MIDI Keyboard all Channels<br>
+5057 - Virtual MIDI Keyboard Channel 1<br>
+...<br>
+5072 - Virtual MIDI Keyboard Channel 16<br>
+5088 - All MIDI Inputs - All Channels<br>
+5089 - All MIDI Inputs - Channel 1<br>
+...<br>
+5104 - All MIDI Inputs - Channel 16<br>
+</div><br>
+
+<i>Monitor Input</i> - 0 monitor off, 1 monitor on, 2 monitor on tape audio style<br>
+
+<i>RecInput</i> - the rec-input type
+<div style="padding-left:4%;">
+0 input(Audio or Midi), <br>
+1 Record Output Stereo<br>
+2 Disabled, Input Monitoring Only<br>
+3 Record Output Stereo, Latency Compensated<br>
+4 Record Output MIDI<br>
+5 Record Output Mono<br>
+6 Record Output Mono, Latency Compensated<br>
+7 MIDI overdub, <br>
+8 MIDI replace, <br>
+9 MIDI touch replace<br>, 
+10 Record Output Multichannel<br>
+11 Record Output Multichannel, Latency Compensated <br>
+12 Record Input Force Mono<br>
+13 Record Input Force Stereo<br>
+14 Record Input Force Multichannel<br>
+15 Record Input Force MIDI<br>
+16 MIDI latch replace<br>
+</div>
+
+<i>MonitorWhileRec</i> - Monitor Trackmedie when recording, 0 is off, 1 is on<br>
+
+<i>presPDCdelay</i> - preserve PDC delayed monitoring in media items<br>
+
+<i>RecordingPath</i> - 0 Primary Recording-Path only, 1 Secondary Recording-Path only, 2 Primary Recording Path and Secondary Recording Path(for invisible backup)<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackVUState">boolean retval = ultraschall.SetTrackVUState(integer tracknumber, integer VUState)</a></i><p></p>
+Sets VU-state; the way metering shows.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>VUState</i> -  0 if MultiChannelMetering is off, 2 if MultichannelMetering is on, 3 Metering is off<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackHeightState">boolean retval = ultraschall.SetTrackHeightState(integer tracknumber, integer height, integer heightstate2)</a></i><p></p>
+Sets TRACKHEIGHT-state; the height and compacted state of the track.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>height</i> -  24 up to 443 pixels<br>
+<i>heightstate2</i> - 0 - use height-parameter, 1 - compact the track and ignore the height-parameter<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackINQState">boolean retval = ultraschall.SetTrackINQState(integer tracknumber, integer INQ1, integer INQ2, integer INQ3, number INQ4, integer INQ5, integer INQ6, integer INQ7, integer INQ8)</a></i><p></p>
+Sets INQ-state; the purpose of this setting is unknown.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>INQ1</i> -  unknown<br>
+<i>INQ2</i> -  unknown<br>
+<i>INQ3</i> -  unknown<br>
+<i>INQ4</i> -  unknown<br>
+<i>INQ5</i> -  unknown<br>
+<i>INQ6</i> -  unknown<br>
+<i>INQ7</i> -  unknown<br>
+<i>INQ8</i> -  unknown<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackNChansState">boolean retval = ultraschall.SetTrackNChansState(integer tracknumber, integer NChans)</a></i><p></p>
+Sets NCHAN-state; the number of channels in this track, as set in the routing.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>NChans</i> - 2 to 64, counted every second channel (2,4,6,8,etc) with stereo-tracks. Unknown, if Multichannel and Mono-tracks count differently.<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackBypFXState">boolean retval = ultraschall.SetTrackBypFXState(integer tracknumber, integer FXBypassState)</a></i><p></p>
+Sets FX, FX-Bypass-state of the track.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>FXBypassState </i> - 0 bypass, 1 activate fx; has only effect, if FX or instruments are added to this track<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackPerfState">boolean retval = ultraschall.SetTrackPerfState(integer tracknumber, integer Perf)</a></i><p></p>
+Sets PERF, the TrackPerformance-State.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>Perf </i> - 0 - allow anticipative FX + allow media buffering, 1 - allow anticipative FX + prevent media buffering, 2 - prevent anticipative FX + allow media buffering, 3 - prevent anticipative FX + prevent media buffering<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackMIDIOutState">boolean retval = ultraschall.SetTrackMIDIOutState(integer tracknumber, integer MIDIOutState)</a></i><p></p>
+Sets MIDIOUT, the state of MIDI out for this track.<p></p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>MIDIOutState </i>
+<div style="padding-left:4%;"> -1 no output<br>
+ 416 - microsoft GS wavetable synth - send to original channels<br>
+ 417-432 - microsoft GS wavetable synth - send to channel state minus 416<br>
+ -31 - no Output, send to original channel 1<br>
+ -16 - no Output, send to original channel 16<br>
+ </div>
+<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackMainSendState">boolean retval = ultraschall.SetTrackMainSendState(integer tracknumber, integer MainSendOn, integer ParentChannels)</a></i><p></p>
+Sets MAINSEND, as set in the routing-settings.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>MainSendOn</i>- on(1) or off(0)<br>
+<i>ParentChannels </i> - the ParentChannels(0-64), interpreted as beginning with ParentChannels to ParentChannels+NCHAN<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackLockState">boolean retval = ultraschall.SetTrackLockState(integer tracknumber, integer LockedState)</a></i><p></p>
+Sets LOCK-State, as set by the menu entry Lock Track Controls.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>LockedState </i> - 1 - locked, 0 - unlocked<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackLayoutNames">boolean retval = ultraschall.SetTrackLayoutNames(integer tracknumber, string TCP_Layoutname, string MCP_Layoutname)</a></i><p></p>
+Sets LAYOUTS, the MCP and TCP-layout by name of the layout as defined in the theme.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>TCP_Layoutname </i> - name of the TrackControlPanel-Layout from the theme to use<br>
+<i>MCP_Layoutname </i> - name of the MixerControlPanel-Layout from the theme to use<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackAutomodeState">boolean retval = ultraschall.SetTrackAutomodeState=function(integer tracknumber, integer automodestate)</a></i><p></p>
+Sets AUTOMODE-State, as set by the menu entry Set Track Automation Mode<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>automodestate</i> - 0 - trim/read, 1 - read, 2 - touch, 3 - write, 4 - latch<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackIcon_Filename">boolean retval = ultraschall.SetTrackIcon_Filename(integer tracknumber, string Iconfilename_with_path)</a></i><p></p>
+Sets TRACKIMGFN, the trackicon-filename with path.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>Iconfilename_with_path</i> - filename+path of the imagefile to use as the trackicon<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackMidiInputChanMap">boolean retval = ultraschall.SetTrackMidiInputChanMap(integer tracknumber, integer InputChanMap)</a></i><p></p>
+Sets MIDI_INPUT_CHANMAP, as set in the Input-MIDI->Map Input to Channel menu.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>InputChanMap</i> - 0 for channel 1, 2 for channel 2, etc. -1 if not existing.<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="SetTrackMidiCTL">boolean retval = ultraschall.SetTrackMidiCTL(integer tracknumber, integer LinkedToMidiChannel, integer unknown)</a></i><p></p>
+sets MIDICTL-state, the linkage to Midi-Channels.<p>
+parameters:<br>
+<i>tracknumber</i> - number of the track, beginning with 0<br>
+<i>LinkedToMidiChannel</i> - unknown<br>
+<i>unknown</i> - unknown<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ToggleScrollingDuringPlayback">ultraschall.ToggleScrollingDuringPlayback(scrolling_switch, move_editcursor)</a></i><p></p>
+Toggles scrolling during playback and recording. Let's you choose to put the edit-marker at the playposition, where you toggled scrolling.<br>
+It changes, if necessary, the state of the actions 41817 and 40036 to scroll or not to scroll; keep that in mind, if you use these actions otherwise as well!<p>
+parameters:<br>
+<i>scrolling_switch</i> - 1-on, 0-off<br>
+<i>move_editcursor</i> - when scrolling stops, shall the editcursor be moved to current position of the playcursor(1) or not(0)<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetPlayCursor_WhenPlaying">ultraschall.SetPlayCursor_WhenPlaying(number position)</a></i><p></p>
+Changes position of the play-cursor, when playing. Changes view to new playposition. Has no effect during recording, when paused or stop and returns -1 in these cases!<p>
+parameters:<br>
+<i>position</i> - in seconds<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetPlayAndEditCursor_WhenPlaying">ultraschall.SetPlayAndEditCursor_WhenPlaying(number position)</a></i><p></p>
+Changes position of the play and edit-cursor, when playing. Changes view to new playposition. Has no effect during recording, when paused or stop and returns -1 in these cases!<p>
+parameters:<br>
+<i>position</i> - in seconds<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="JumpForwardBy">ultraschall.JumpForwardBy(number position)</a></i><p></p>
+Jumps forward by <i>position</i> seconds. Returns -1 if parameter is negative. During Recording: only the playcursor will be moved, the current recording-position is still at it's "old" position! If you want to move the current recording position as well, use <a href="#JumpForwardBy_Recording">ultraschall.JumpForwardBy_Recording</a> instead.<p>
+parameters:<br>
+<i>position</i> - in seconds<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="JumpBackwardBy">ultraschall.JumpBackwardBy(number position)</a></i><p></p>
+Jumps backward by <i>position</i> seconds. Returns -1 if parameter is negative. During Recording: only the playcursor will be moved, the current recording-position is still at it's "old" position! If you want to move the current recording position as well, use <a href="#JumpBackwardBy_Recording">ultraschall.JumpBackwardBy_Recording</a> instead.<p>
+parameters:<br>
+<i>position</i> - in seconds<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="JumpForwardBy_Recording">ultraschall.JumpForwardBy_Recording(number position)</a></i><p></p>
+Stops recording, jumps forward by <i>position</i> seconds and restarts recording. Will keep paused-recording, if recording was paused. Has no effect during play,play/pause and stop.<p>
+parameters:<br>
+<i>position</i> - in seconds<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="JumpBackwardBy_Recording">ultraschall.JumpBackwardBy_Recording(number position)</a></i><p></p>
+Stops recording, jumps backward by <i>position</i> seconds and restarts recording. Will keep paused-recording, if recording was paused. Has no effect during play,play/pause and stop.<p>
+parameters:<br>
+<i>position</i> - in seconds<p></p>
+
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetNextClosestItemEdge">number position = ultraschall.GetNextClosestItemEdge(string tracks, integer cursor_type, optional number time_position)</a></i><p></p>
+returns the position of the next closest item in seconds. It will return the position of the beginning or the end of that item, depending on what is closer.<p>
+
+parameters:<br>
+<i>tracks</i> - a string with the numbers of tracks to check for closest items, seperated by a comma (e.g. "0,1,6")<br>
+<i>cursor_type</i> - next closest item related to the current position of 0 - Edit Cursor, 1 - Play Cursor, 2 - Mouse Cursor, 3 - Timeposition<br>
+<i>time_position</i> - only, when cursor_type=3, a time position in seconds, from where to check for the next closest item. When omitted, it will take the current play(during play and rec) or edit-cursor-position.<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetPreviousClosestItemEdge">number position = ultraschall.GetPreviousClosestItemEdge(string tracks, integer cursor_type, optional number time_position)</a></i><p></p>
+returns the position of the previous closest item-edge in seconds. It will return the position of the beginning or the end of that item, depending on what is closer.<p>
+
+parameters:<br>
+<i>tracks</i> - a string with the numbers of tracks to check for closest items, seperated by a comma (e.g. "0,1,6")<br>
+<i>cursor_type</i> - previous closest item related to the current position of 0 - Edit Cursor, 1 - Play Cursor, 2 - Mouse Cursor, 3 - Timeposition<br>
+<i>time_position</i> - only, when cursor_type=3, a time position in seconds, from where to check for the previous closest item. When omitted, it will take the current play(during play and rec) or edit-cursor-position.<p></p>
+ 
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetClosestNextMarker">number markerindex, number position, string markername = ultraschall.GetClosestNextMarker(integer cursor_type, optional number time_position)</a></i><p></p>
+returns the markerindex(counted from all markers), the position and the name of the next closest marker in seconds.<p>
+
+parameters:<br>
+<i>cursor_type</i> - previous closest marker related to the current position of 0 - Edit Cursor, 1 - Play Cursor, 2 - Mouse Cursor, 3 - Timeposition<br>
+<i>time_position</i> - only, when cursor_type=3, a time position in seconds, from where to check for the next closest marker. When omitted, it will take the current play(during play and rec) or edit-cursor-position.<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetClosestPreviousMarker">number markerindex, number position, string markername = ultraschall.GetClosestPreviousMarker(integer cursor_type, optional number time_position)</a></i><p></p>
+returns the markerindex(counted from all markers), the position and the name of the previous closest marker in seconds.<p>
+
+parameters:<br>
+<i>cursor_type</i> - previous closest marker related to the current position of 0 - Edit Cursor, 1 - Play Cursor, 2 - Mouse Cursor, 3 - Timeposition<br>
+<i>time_position</i> - only, when cursor_type=3, a time position in seconds, from where to check for the previous closest marker. When omitted, it will take the current play(during play and rec) or edit-cursor-position.<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetClosestNextRegion">number markerindex, number position, string markername = ultraschall.GetClosestNextRegion(integer cursor_type, optional number time_position)</a></i><p></p>
+returns the regionindex(counted from all markers and regions), the position and the name of the next closest regionstart/end(depending on which is closer to time_position) in seconds.<p>
+
+parameters:<br>
+<i>cursor_type</i> - previous closest regionstart/end related to the current position of 0 - Edit Cursor, 1 - Play Cursor, 2 - Mouse Cursor, 3 - Timeposition<br>
+<i>time_position</i> - only, when cursor_type=3, a time position in seconds, from where to check for the next closest regionstart/end. When omitted, it will take the current play(during play and rec) or edit-cursor-position.<p></p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetClosestPreviousRegion">number markerindex, number position, string markername = ultraschall.GetClosestPreviousRegion(integer cursor_type, optional number time_position)</a></i><p></p>
+returns the regionindex(counted from all markers and regions), the position and the name of the previous closest regionstart/end(depending on which is closer to time_position) in seconds.<p>
+
+parameters:<br>
+<i>cursor_type</i> - previous closest regionstart/end related to the current position of 0 - Edit Cursor, 1 - Play Cursor, 2 - Mouse Cursor, 3 - Timeposition<br>
+<i>time_position</i> - only, when cursor_type=3, a time position in seconds, from where to check for the previous closest regionstart/end. When omitted, it will take the current play(during play and rec) or edit-cursor-position.<p></p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> 
+<i><a id="GetClosestGoToPoints">number elementposition_prev, string elementtype_prev, integer number_prev, number elementposition_next, string elementtype_next, integer number_next = ultraschall.GetClosestGoToPoints(string tracks, number time_position)</a></i><p></p>
+returns, what are the closest markers/regions/item starts/itemends to position and within the chosen tracks.<p>
+returns position of previous element, type of the element, elementnumber, position of next element, type of the element, elementnumber<br>
+<i>positions</i> - in seconds<br>
+<i>type</i> - can be "Item", "Marker", "Region", "ProjectStart", "ProjectEnd"<br>
+<i>elementnumber</i> - is either the number of the item or the number of the region/marker, -1 if it's an Item.<p>
+
+parameters:<br>
+<i>tracks</i> - tracknumbers, seperated by a comma.<br>
+<i>time_position</i> - a time position in seconds, from where to check for the next/previous closest items/markers/regions.<p></p>
+
+
+
+ 
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ToggleMute">integer retval = ultraschall.ToggleMute(Mediatrack track, number position, integer state)</a></i><p></p>
+Sets mute within the mute-envelope-lane, by inserting the fitting envelope-points. Can be used to program coughbuttons. Returns -1, if it fails.<p>
+parameters:<br>
+<i>track</i> - the track-number, for where you want to set the mute-envelope-lane.<br>
+<i>position</i> - position in seconds<br>
+<i>state</i> - 0 for mute the track on this position, 1 for unmuting the track on this position<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ToggleMute_TrackObject">integer retval = ultraschall.ToggleMute_TrackObject(Mediatrack trackobject, number position, integer state)</a></i><p></p>
+Sets mute within the mute-envelope-lane, by inserting the fitting envelope-points. Can be used to program coughbuttons. Returns -1, if it fails.<br>
+Works like <a href="#ToggleMute">ultraschall.ToggleMute</a> but uses a trackobject instead of the tracknumber as parameter.<p>
+parameters:<br>
+<i>trackobject</i> - the track-object for the track, where you want to set the mute-envelope-lane. Refer <a href="Reaper_API_Lua.html#reaper.GetTrack">GetTrack()</a> for more details.<br>
+<i>position</i> - position in seconds<br>
+<i>state</i> - 0 for mute the track on this position, 1 for unmuting the track on this position<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetNextMuteState">integer envIDX, number envVal, number envPosition = ultraschall.GetNextMuteState(integer track, number position)</a></i><p></p>
+Returns the next mute-envelope-point-ID, it's value(0 or 1) and it's time, in relation to position. Envelope-Points numbering starts with 0! Returns -1 if not existing.<p>
+parameters:<br>
+<i>track</i> - the track-number, for where you want to set the mute-envelope-lane.<br>
+<i>position</i> - position in seconds, from where to look for the next mute-envelope-point<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetPreviousMuteState">integer envIDX, number envVal, number envPosition = ultraschall.GetPreviousMuteState(integer track, number position)</a></i><p></p>
+Returns the previous mute-envelope-point-ID, it's value(0 or 1) and it's time, in relation to position. Envelope-Points numbering starts with 0! Returns -1 if not existing.<p>
+parameters:<br>
+<i>track</i> - the track-number, for where you want to set the mute-envelope-lane.<br>
+<i>position</i> - position in seconds, from where to look for the previous mute-envelope-point<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetNextMuteState_TrackObject">integer envIDX, number envVal, number envPosition = ultraschall.GetNextMuteState(MediaTrack track, number position)</a></i><p></p>
+Returns the next mute-envelope-point-ID, it's value(0 or 1) and it's time, in relation to position. Envelope-Points numbering starts with 0! Returns -1 if not existing.<p>
+parameters:<br>
+<i>track</i> - the MediaTrack-object, for the track, where you want to set the mute-envelope-lane.<br>
+<i>position</i> - position in seconds, from where to look for the next mute-envelope-point<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetPreviousMuteState_TrackObject">integer envIDX, number envVal, number envPosition = ultraschall.GetPreviousMuteState(MediaTrack track, number position)</a></i><p></p>
+Returns the previous mute-envelope-point-ID, it's value(0 or 1) and it's time, in relation to position. Envelope-Points numbering starts with 0! Returns -1 if not existing.<p>
+parameters:<br>
+<i>track</i> - the MediaTrack-object, for the track, where you want to set the mute-envelope-lane.<br>
+<i>position</i> - position in seconds, from where to look for the previous mute-envelope-point<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CountMuteEnvelopePoints">integer retval = ultraschall.CountMuteEnvelopePoints(integer track)</a></i><p></p>
+Returns the number of the envelope-points in the Mute-lane of track "track". Returns -1, if it fails.<p>
+parameters:<br>
+<i>track</i> - the track-number, for which you want to count the mute-envelope-points.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="AddNormalMarker"> integer marker_number = ultraschall.AddNormalMarker(number position, integer shown_number, string markertitle)</a></i><p></p>
+Adds a normal marker. Returns the index of the marker as marker_number. <p>
+parameters:<br>
+<i>position</i> - position in seconds.<br>
+<i>shown_number</i> - the number, that will be shown within Reaper. Can be multiple times.<br>
+<i>markertitle</i> - the title of the marker.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="AddPodRangeRegion">integer marker_number = ultraschall.AddPodRangeRegion(number startposition, number endposition)</a></i><p></p>
+Adds a region, which shows the time-range from the beginning to the end of the podcast.<p>
+If you have a podcast, that doesn't start at project-position 00:00 but later, then you need take care of that offset, when exporting markers, as otherwise you risk them being misplaced. For that, a PodRangeRegion is perfect, as it can be used for determining the start and the end of a podcast for render as well as metadata/marker-export.<p>
+See <a href="#SetPodRangeRegion">SetPodRangeRegion</a>, <a href="#GetPodRangeRegion">GetPodRangeRegion</a> and <a href="#DeletePodRangeRegion">DeletePodRangeRegion</a> for more.<p>
+Returns the index of the region as marker_number. <p>
+parameters:<br>
+<i>startposition</i> - begin of the podcast in seconds<br>
+<i>endposition</i> - end of the podcast in seconds<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="AddChapterMarker"> integer marker_number = ultraschall.AddChapterMarker(number position, integer shown_number, string chaptertitle)</a></i><p></p>
+Adds a Chapter marker. Returns the index of the marker as marker_number. <p>
+parameters:<br>
+<i>position</i> - position in seconds.<br>
+<i>shown_number</i> - the number, that will be shown within Reaper. Can be multiple times.<br>
+<i>chaptertitle</i> - the title of the chaptermarker; will be shown as _Chapter:chaptertitle<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="AddEditMarker"> integer marker_number = ultraschall.AddEditMarker(number position, integer shown_number, string edittitle)</a></i><p></p>
+Adds an Edit marker. Returns the index of the marker as marker_number. <p>
+parameters:<br>
+<i>position</i> - position in seconds.<br>
+<i>shown_number</i> - the number, that will be shown within Reaper. Can be multiple times.<br>
+<i>edittitle</i> - the title of the chaptermarker; will be shown as _Edit:edittitle<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="AddDummyMarker"> integer marker_number = ultraschall.AddDummyMarker(number position, integer shown_number, string dummytitle)</a></i><p></p>
+Adds a Dummy marker. Returns the index of the marker as marker_number. <p>
+Dummy-markers aren't meant to be for productive use, but rather as a temporary marker(i.e. for conversion operations)<p>
+parameters:<br>
+<i>position</i> - position in seconds.<br>
+<i>shown_number</i> - the number, that will be shown within Reaper. Can be multiple times.<br>
+<i>dummytitle</i> - the title of the chaptermarker; will be shown as _Dummy:dummytitle<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CountNormalMarkers"> integer number_of_markers = ultraschall.CountNormalMarkers()</a></i><p></p>
+Counts all normal markers, not(!) _shownote/_edit/_chapter/_dummy-markers.<p>
+Returns the number of normal markers<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CountChapterMarkers"> integer number of chapter_markers = ultraschall.CountChapterMarkers()</a></i><p></p>
+Counts all chapter-markers.<p>
+Returns the number of chapter-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CountEditMarkers"> integer number_of_edit_markers = ultraschall.CountEditMarkers()</a></i><p></p>
+Counts all edit-markers.<p>
+Returns the number of edit-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="CountDummyMarkers"> integer number_of_dummy_markers = ultraschall.CountDummyMarkers()</a></i><p></p>
+Counts all dummy-markers.<p>
+Returns the number of dummy-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetPodRangeRegion"> number start_position, number end_position = ultraschall.GetPodRangeRegion()</a></i><p></p>
+Gets the start_position and the end_position of the PodRangeRegion.<p>
+See <a href="#AddPodRangeRegion">AddPodRangeRegion</a>, <a href="#SetPodRangeRegion">SetPodRangeRegion</a> and <a href="#DeletePodRangeRegion">DeletePodRangeRegion</a> for more.<p>
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EnumerateNormalMarkers"> integer retnumber, integer retidxnum, number position, string markername = ultraschall.EnumerateNormalMarkers(integer number)</a></i><p></p>
+Get the data of a normal marker.<p>
+returns:<br>
+<i>retnumber</i> - number of the marker in general(within of all markers)<br>
+<i>retidxnum</i> - the shown number with the marker within Reaper<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - name of the marker<p>
+parameter:<br>
+<i>number</i> - number of the marker(normal markers only). Refer <a href="#CountNormalMarkers">ultraschall.CountNormalMarkers</a> for getting the number of normal markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EnumerateChapterMarkers"> integer retnumber, integer retidxnum, number position, string chaptername = ultraschall.EnumerateChapterMarkers(integer number)</a></i><p></p>
+Get the data of a chapter marker.<p>
+returns:<br>
+<i>retnumber</i> - number of the chaptermarker in general(within of all markers)<br>
+<i>retidxnum</i> - the shown number with the marker within Reaper<br>
+<i>position</i> - position in seconds<br>
+<i>chaptername</i> - name of the chaptermarker, excluding _Chapter:<p>
+parameter:<br>
+<i>number</i> - number of the chapter-marker. Refer <a href="#CountChapterMarkers">ultraschall.CountChapterMarkers</a> for getting the number of chapter-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EnumerateDummyMarkers"> integer retnumber, integer retidxnum, number position, string dummyname = ultraschall.EnumerateDummyMarkers(integer number)</a></i><p></p>
+Get the data of a dummy marker.<p>
+returns:<br>
+<i>retnumber</i> - number of the dummymarker in general(within of all markers)<br>
+<i>retidxnum</i> - the shown number with the marker within Reaper<br>
+<i>position</i> - position in seconds<br>
+<i>dummyname</i> - name of the dummymarker, excluding _Dummy:<p>
+parameter:<br>
+<i>number</i> - number of the dummy-marker. Refer <a href="#CountDummyMarkers">ultraschall.CountDummyMarkers</a> for getting the number of dummy-markers.<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EnumerateEditMarkers"> integer retnumber, integer retidxnum, number position, string editname = ultraschall.EnumerateEditMarkers(integer number)</a></i><p></p>
+Get the data of an edit marker.<p>
+returns:<br>
+<i>retnumber</i> - number of the editmarker in general(within of all markers)<br>
+<i>retidxnum</i> - the shown number with the marker within Reaper<br>
+<i>position</i> - position in seconds<br>
+<i>editname</i> - name of the editmarker, excluding _Edit:<p>
+parameter:<br>
+<i>number</i> - number of the edit-marker. Refer <a href="#CountEditMarkers">ultraschall.CountEditMarkers</a> for getting the number of edit-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetAllChapterMarkers"> integer number_of_chapters, array chaptermarkersarray = ultraschall.GetAllChapterMarkers()</a></i><p></p>
+returns the number of chapters and an array with each chaptermarker in the format:<p>
+<i style="padding-left:4%">chaptermarkersarray [chapter_index_number] [0-position;1-chaptername]</i><br><br>
+where chapter_index_number begins with 1, position is time in seconds(float) and chaptername is a string.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetAllEditMarkers"> integer number_of_editmarkers, array editmarkersarray = ultraschall.GetAllEditMarkers()</a></i><p></p>
+returns the number of editmarkers and an array with each editmarker in the format:<p>
+<i style="padding-left:4%">editmarkersarray [edit_index_number] [0-position;1-editname]</i><br><br>
+where edit_index_number begins with 1, position is time in seconds(float) and editname is a string.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetAllNormalMarkers"> index number_of_normalmarkers, array normalmarkersarray = ultraschall.GetAllNormalMarkers()</a></i><p></p>
+returns the number of normalmarkers and an array with each normalmarker in the format:<p>
+<i style="padding-left:4%">normalmarkersarray [normalmarker_index_number] [0-position;1-markername]</i><br><br>
+where marker_index_number begins with 1, position is time in seconds(float) and markername is a string.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="GetAllMarkers"> integer number_of_all_markers, array allmarkersarray ultraschall.GetAllMarkers()</a></i><p></p>
+To get all Markers in the project(normal, edit, chapter), regardless of their category.<br>
+returns the number of markers and an array with each marker in the format:<p>
+<i style="padding-left:4%">allmarkersarray [marker_index_number] [0-position;1-markername]</i><br><br>
+where marker_index_number begins with 1, position is time in seconds(float) and markername is a string.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetNormalMarker"> boolean retval = ultraschall.SetNormalMarker(integer number, number position, integer shown_number, string markertitle)</a></i><p></p>
+ Sets values of a normal Marker(no _Chapter:, _Shownote:, etc). Returns true if successful and false if not(i.e. marker doesn't exist)<p>
+ Parameters:<br>
+ <i>number</i> - number of the marker, 1 to current number of markers<br>
+ <i>position</i> - position in seconds; -1 - keep the old value<br>
+ <i>shown_number</i> - the number shown with the marker in Reaper; -1 - keep the old value<br>
+ <i>markertitle</i> - title of the marker; nil - keep the old value<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetEditMarker"> boolean retval = ultraschall.SetEditMarker(integer number, number position, integer shown_number, string edittitle)</a></i><p></p>
+Sets values of an Edit Marker. Returns true if successful and false if not(i.e. marker doesn't exist)<p>
+ Parameters:<br>
+ <i>number</i> - number of the marker, 1 to current number of markers<br>
+ <i>position</i> - position in seconds; -1 - keep the old value<br>
+ <i>shown_number</i> - the number shown with the marker in Reaper; -1 - keep the old value<br>
+ <i>edittitle</i> - title of the editmarker; nil - keep the old value<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetChapterMarker"> boolean retval = ultraschall.SetChapterMarker(integer number, number position, integer shown_number, string chaptertitle)</a></i><p></p>
+Sets values of a Chapter Marker. Returns true if successful and false if not(i.e. marker doesn't exist)<p>
+ Parameters:<br>
+ <i>number</i> - number of the marker, 1 to current number of markers<br>
+ <i>position</i> - position in seconds; -1 - keep the old value<br>
+ <i>shown_number</i> - the number shown with the marker in Reaper; -1 - keep the old value<br>
+ <i>chaptertitle</i> - title of the chapter; nil - keep the old value<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="SetPodRangeRegion"> integer retval = ultraschall.SetPodRangeRegion(number startposition, number endposition)</a></i><p></p>
+Sets "_PodRange:"-Region, returns -1 if it fails.<p>
+
+See <a href="#AddPodRangeRegion">AddPodRangeRegion</a>, <a href="#GetPodRangeRegion">GetPodRangeRegion</a> and <a href="#DeletePodRangeRegion">DeletePodRangeRegion</a> for more.<p>
+Parameters:<br>
+<i>startposition</i> - startposition in seconds, must be positive value<br>
+<i>endposition</i> - endposition in seconds, must be bigger than startposition<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="DeletePodRangeRegion"> integer retval = ultraschall.DeletePodRangeRegion()</a></i><p></p>
+deletes the PodRange-Region. Returns 1, if it worked, -1 if it failed.<p>
+See <a href="#AddPodRangeRegion">AddPodRangeRegion</a>, <a href="#SetPodRangeRegion">SetPodRangeRegion</a> and <a href="#GetPodRangeRegion">GetPodRangeRegion</a> for more.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="DeleteNormalMarker"> boolean retval = ultraschall.DeleteNormalMarker(integer number)</a></i><p></p>
+Deletes a Normal-Marker. Returns true if successful and false if not(i.e. marker doesn't exist) Use <a href="#EnumerateNormalMarkers">ultraschall.EnumerateNormalMarkers</a> to get the correct number.<p>
+Parameter:<br>
+<i>number</i> - number of the normal-marker, 1 to current number of normal-markers<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="DeleteChapterMarker"> boolean retval = ultraschall.DeleteChapterMarker(integer number)</a></i><p></p>
+Deletes a _Chapter:-Marker. Returns true if successful and false if not(i.e. marker doesn't exist) Use <a href="#EnumerateChapterMarkers">ultraschall.EnumerateChapterMarkers</a> to get the correct number.<p>
+Parameter:<br>
+<i>number</i> - number of the _Chapter:-marker, 1 to current number of _Chapter:-markers<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="DeleteEditMarker"> boolean retval = ultraschall.DeleteEditMarker(integer number)</a></i><p></p>
+Deletes a _Edit:-Marker. Returns true if successful and false if not(i.e. marker doesn't exist) Use <a href="#EnumerateEditMarkers">ultraschall.EnumerateEditMarkers</a> to get the correct number.<p>
+Parameter:<br>
+<i>number</i> - number of the _Edit:-marker, 1 to current number of _Edit:-markers<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="DeleteDummyMarker"> boolean retval = ultraschall.DeleteDummyMarker(integer number)</a></i><p></p>
+Deletes a _Dummy:-Marker. Returns true if successful and false if not(i.e. marker doesn't exist) Use <a href="#EnumerateDummyMarkers">ultraschall.EnumerateDummyMarkers</a> to get the correct number.<p>
+Parameter:<br>
+<i>number</i> - number of the _Dummy:-marker, 1 to current number of _Dummy:-markers<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ExportChapterMarkersToFile"> integer retval = ultraschall.ExportChapterMarkersToFile(string filename_with_path,number PodRangeStart, number PodRangeEnd)</a></i><p></p>
+Export Chapter-Markers to filename_with_path. Returns -1 in case of error.<br>
+PodRangeStart influences the time, with which the markers will be exported to file: chaptermarkerposition minus PodRangeStart. That way, you can skip the Podcaststart-offset, when a podcast doesn't start at 00:00, but later, which could otherwise lead to misplaced chapter-markers.<p>
+Use <a href="#AddPodRangeRegion">AddPodRangeRegion</a>, <a href="#SetPodRangeRegion">SetPodRangeRegion</a> or <a href="#GetPodRangeRegion">GetPodRangeRegion</a> to add/set/get a PodRange-region, intended for such needs.<p>
+Parameters:<br>
+<i>filename_with_path</i> - filename of the file where the markers shall be exported to<br>
+<i>PodRangeStart</i> - start of the Podcast;markers earlier of that will not be exported;markers exported will be markerposition minus PodRangeStart; must be a positive value; nil=0<br>
+<i>PodRangeEnd</i> - end of the Podcast; markers later of that will not be exported; must be a positive value; nil=end of project<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ExportEditMarkersToFile"> integer retval = ultraschall.ExportEditMarkersToFile(string filename_with_path, number PodRangeStart, number PodRangeEnd)</a></i><p></p>
+Export Edit-Markers to filename_with_path. Returns -1 in case of error.<p>
+PodRangeStart influences the time, with which the markers will be exported to file: editmarkerposition minus PodRangeStart. That way, you can skip the Podcaststart-offset, when a podcast doesn't start at 00:00, but later, which could otherwise lead to misplaced edit-markers.<p>
+Use <a href="#AddPodRangeRegion">AddPodRangeRegion</a>, <a href="#SetPodRangeRegion">SetPodRangeRegion</a> or <a href="#GetPodRangeRegion">GetPodRangeRegion</a> to add/set/get a PodRange-region, intended for such needs.<p>
+
+Parameters:<br>
+<i>filename_with_path</i> - filename of the file where the markers shall be exported to<br>
+<i>PodRangeStart</i> - start of the Podcast;markers earlier of that will not be exported;markers exported will be markerposition minus PodRangeStart; must be a positive value; nil=0<br>
+<i>PodRangeEnd</i> - end of the Podcast; markers later of that will not be exported; must be a positive value; nil=end of project<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ExportNormalMarkersToFile"> integer retval = ultraschall.ExportNormalMarkersToFile(string filename_with_path, number PodRangeStart, number PodRangeEnd)</a></i><p></p>
+Export Normal-Markers to filename_with_path. Returns -1 in case of error.<p>
+Skips Chapter,Dummy,Edit and Shownote-markers, as well as regions!<p>
+PodRangeStart influences the time, with which the markers will be exported to file: normalmarkerposition minus PodRangeStart. That way, you can skip the Podcaststart-offset, when a podcast doesn't start at 00:00, but later, which could otherwise lead to misplaced normal-markers.<p>
+Use <a href="#AddPodRangeRegion">AddPodRangeRegion</a>, <a href="#SetPodRangeRegion">SetPodRangeRegion</a> or <a href="#GetPodRangeRegion">GetPodRangeRegion</a> to add/set/get a PodRange-region, intended for such needs.<p>
+Parameters:<br>
+<i>filename_with_path</i> - filename of the file where the markers shall be exported to<br>
+<i>PodRangeStart</i> - start of the Podcast;markers earlier of that will not be exported;markers exported will be markerposition minus PodRangeStart; must be a positive value; nil=0<br>
+<i>PodRangeEnd</i> - end of the Podcast; markers later of that will not be exported; must be a positive value; nil=end of project<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ImportChaptersFromFile"> array chapters = ultraschall.ImportChaptersFromFile(string filename_with_path, PodRangeStart)</a></i><p></p>
+Imports chapterentries from a file and returns an array of the imported values.<p>
+array[markernumber1][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber1][1] - name of the marker<br>
+array[markernumber2][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber2][1] - name of the marker<br>
+array[markernumberx][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumberx][1] - name of the marker<p>
+
+Parameters:<br>
+<i>filename_with_path</i> - filename with path of the file to import<br>
+<i>Podrangestart</i> - the start of the podcast in seconds. Will be added to the time-positions of each chaptermarker. Podrangestart=0 gives you the timepositions, as they were stored in the chapter-marker-import-file.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ImportChaptersFromFile_Filerequester"> array chapters = ultraschall.ImportChaptersFromFile_Filerequester(PodRangeStart)</a></i><p></p>
+Opens a filerequester to select the importfile. Imports chapterentries from the selected file and returns an array of the imported values.<p>
+array[markernumber1][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber1][1] - name of the marker<br>
+array[markernumber2][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber2][1] - name of the marker<br>
+array[markernumberx][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumberx][1] - name of the marker<p>
+
+Parameters:<br>
+<i>filename_with_path</i> - filename with path of the file to import<br>
+<i>Podrangestart</i> - the start of the podcast in seconds. Will be added to the time-positions of each chaptermarker. Podrangestart=0 gives you the timepositions, as they were stored in the chapter-marker-import-file.<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ImportEditFromFile"> array editmarkers = ultraschall.ImportEditFromFile(string filename_with_path, PodRangestart)</a></i><p></p>
+Imports editentries from a file and returns an array of the imported values.<p>
+array[markernumber1][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber1][1] - name of the marker<br>
+array[markernumber2][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber2][1] - name of the marker<br>
+array[markernumberx][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumberx][1] - name of the marker<p>
+
+Parameters:<br>
+<i>filename_with_path</i> - filename with path of the file to import<br>
+<i>Podrangestart</i> - the start of the podcast in seconds. Will be added to the time-positions of each chaptermarker. Podrangestart=0 gives you the timepositions, as they were stored in the chapter-marker-import-file.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ImportEditFromFile_Filerequester"> array editmarkers = ultraschall.ImportEditFromFile_Filerequester(PodRangeStart)</a></i><p></p>
+Opens a filerequester to select the importfile. Imports editentries from the selected file and returns an array of the imported values.<p>
+array[markernumber1][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber1][1] - name of the marker<br>
+array[markernumber2][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber2][1] - name of the marker<br>
+array[markernumberx][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumberx][1] - name of the marker<p>
+
+Parameters:<br>
+<i>filename_with_path</i> - filename with path of the file to import<br>
+<i>Podrangestart</i> - the start of the podcast in seconds. Will be added to the time-positions of each chaptermarker. Podrangestart=0 gives you the timepositions, as they were stored in the chapter-marker-import-file.<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ImportMarkersFromFile"> array markers = ultraschall.ImportMarkersFromFile(string filename_with_path, PodrangeStart)</a></i><p></p>
+Imports markerentries from a file and returns an array of the imported values.<p>
+array[markernumber1][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber1][1] - name of the marker<br>
+array[markernumber2][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber2][1] - name of the marker<br>
+array[markernumberx][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumberx][1] - name of the marker<p>
+
+Parameters:<br>
+<i>filename_with_path</i> - filename with path of the file to import<br>
+<i>Podrangestart</i> - the start of the podcast in seconds. Will be added to the time-positions of each chaptermarker. Podrangestart=0 gives you the timepositions, as they were stored in the chapter-marker-import-file.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ImportMarkersFromFile_Filerequester"> array markers = ultraschall.ImportMarkersFromFile_Filerequester(PodRangeStart)</a></i><p></p>
+Opens a filerequester to select the importfile. Imports markerentries from the selected file and returns an array of the imported values.<p>
+array[markernumber1][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber1][1] - name of the marker<br>
+array[markernumber2][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumber2][1] - name of the marker<br>
+array[markernumberx][0] - position of the marker in seconds+PodRangeStart<br>
+array[markernumberx][1] - name of the marker<p>
+
+Parameters:<br>
+<i>filename_with_path</i> - filename with path of the file to import<br>
+<i>Podrangestart</i> - the start of the podcast in seconds. Will be added to the time-positions of each chaptermarker. Podrangestart=0 gives you the timepositions, as they were stored in the chapter-marker-import-file.<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="MarkerToEditMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.MarkerToEditMarker(integer number)</a></i><p></p>
+Converts a normal-marker to an edit-marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the chapter-marker. Refer <a href="#CountNormalMarkers">ultraschall.CountNormalMarkers</a> for getting the number of normal-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="MarkerToChapterMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.MarkerToChapterMarker(integer number)</a></i><p></p>
+Converts a normal-marker to a chapter marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the chapter-marker. Refer <a href="#CountNormalMarkers">ultraschall.CountNormalMarkers</a> for getting the number of normal-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="MarkerToDummyMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.MarkerToDummyMarker(integer number)</a></i><p></p>
+Converts a normal-marker to a dummy marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the chapter-marker. Refer <a href="#CountNormalMarkers">ultraschall.CountNormalMarkers</a> for getting the number of normal-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ChapterToEditMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.ChapterToEditMarker(integer number)</a></i><p></p>
+Converts a chapter-marker to an edit marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the chapter-marker. Refer <a href="#CountChapterMarkers">ultraschall.CountChapterMarkers</a> for getting the number of chapter-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ChapterToDummyMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.ChapterToDummyMarker(integer number)</a></i><p></p>
+Converts a chapter-marker to a dummy marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the chapter-marker. Refer <a href="#CountChapterMarkers">ultraschall.CountChapterMarkers</a> for getting the number of chapter-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="ChapterToMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.ChapterToMarker(integer number)</a></i><p></p>
+Converts a chapter-marker to a normal marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the chapter-marker. Refer <a href="#CountChapterMarkers">ultraschall.CountChapterMarkers</a> for getting the number of chapter-markers.<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EditToChapterMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.EditToChapterMarker(integer number)</a></i><p></p>
+Converts a edit-marker to a chapter marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the edit-marker. Refer <a href="#CountEditMarkers">ultraschall.CountEditMarkers</a> for getting the number of edit-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EditToDummyMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.EditToDummyMarker(integer number)</a></i><p></p>
+Converts an edit-marker to a dummy marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the edit-marker. Refer <a href="#CountEditMarkers">ultraschall.CountEditMarkers</a> for getting the number of edit-markers.<p>
+
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="EditToMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.EditToMarker(integer number)</a></i><p></p>
+Converts an edit-marker to a normal marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the edit-marker. Refer <a href="#CountEditMarkers">ultraschall.CountEditMarkers</a> for getting the number of edit-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="DummyToChapterMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.DummyToChapterMarker(integer number)</a></i><p></p>
+Converts a dummy-marker to a chapter marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the dummy-marker. Refer <a href="#CountDummyMarkers">ultraschall.CountDummyMarkers</a> for getting the number of dummy-markers.<p>
+
+ 
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="DummyToEditMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.DummyToEditMarker(integer number)</a></i><p></p>
+Converts a dummy-marker to an edit marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the dummy-marker. Refer <a href="#CountDummyMarkers">ultraschall.CountDummyMarkers</a> for getting the number of dummy-markers.<p>
+
+<hr><br><img style="width:3%;" src="gfx/US_40-beta.png" alt="Ultraschall 4.0 Framework beta1"><img style="width:3%;" src="gfx/Reaper-Logo_5_40.png" alt="Reaper 5.40"><img style="width:3%;" src="gfx/SWS_Logo_2_8_8.png" alt="SWS 2.8.8"> <i><a id="DummyToMarker"> integer idx, integer shown_number, number position, string markername = ultraschall.DummyToMarker(integer number)</a></i><p></p>
+Converts a dummy-marker to a normal marker.<p>
+
+returns:<br>
+<i>idx</i> - number of the marker in general(within of all markers)<br>
+<i>shown_number</i> - the shown number with the marker within Reaper.<br>
+<i>position</i> - position in seconds<br>
+<i>markername</i> - the name of the marker<p>
+
+parameter:<br>
+<i>number</i> - number of the dummy-marker. Refer <a href="#CountDummyMarkers">ultraschall.CountDummyMarkers</a> for getting the number of dummy-markers.<p>
+<hr>
+</div>
